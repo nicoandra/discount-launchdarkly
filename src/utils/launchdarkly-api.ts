@@ -13,6 +13,7 @@ export interface LaunchDarklyApiFetchProps {
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE';
   body?: BodyInit | null | undefined;
   skip?: boolean;
+  headers?: Record<string, string>;
 }
 
 class LaunchDarklyApi {
@@ -27,7 +28,8 @@ class LaunchDarklyApi {
     query,
     method,
     body,
-    skip,
+    headers = {},
+    skip = false,
   }: LaunchDarklyApiFetchProps): Promise<T | null> {
     if (skip) {
       return Promise.resolve(null);
@@ -46,6 +48,7 @@ class LaunchDarklyApi {
       body,
       headers: {
         Authorization: this.apiKey,
+        ...headers,
       },
     });
     const json: T = await response.json();

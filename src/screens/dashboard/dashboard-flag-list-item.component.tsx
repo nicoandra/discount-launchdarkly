@@ -9,12 +9,15 @@ import {
   Tag,
   Text,
   Tooltip,
+  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
+import { useUpdateFlag } from 'hooks/use-update-flag';
 import moment from 'moment';
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { FlagTargetingToggleModal } from './flag-targeting-toggle.modal';
 
 interface DashboardFlagListItemInterface {
   flag: FlagItem;
@@ -27,6 +30,13 @@ export const DashboardFlagListItem = ({
   isLastItem,
 }: DashboardFlagListItemInterface) => {
   const { env } = useLaunchDarklyConfig();
+  const {
+    onOpen: openToggleFlag,
+    isOpen: isOpenToggleFlag,
+    onClose: onCloseToggleFlag,
+  } = useDisclosure();
+  const { isUpdatingFlag, onToggleFlagTargeting } = useUpdateFlag();
+
   const { creationDateFormatted, creationDateRelative } = useMemo(() => {
     const creationDateMoment = moment(flag.creationDate);
     return {
@@ -43,6 +53,28 @@ export const DashboardFlagListItem = ({
     console.log('todo: open flag', flag);
   }, [flag]);
 
+  const isFlagTargetingOn = useMemo(() => {
+    return flag.environments[env.key]?.on;
+  }, [flag, env]);
+
+  const onConfirmToggleFlag = useCallback(
+    ({ comment }: { comment: string }) => {
+      const instruction = isFlagTargetingOn ? 'turnFlagOff' : 'turnFlagOn';
+      console.log('Toggle flag targeting', flag.key, { instruction, comment });
+      onToggleFlagTargeting({
+        flagKey: flag.key,
+        instruction,
+        comment,
+      });
+    },
+    [flag, isFlagTargetingOn],
+  );
+
+  // Temporarily while switching envs, this key doesn't exist:
+  if (!flag.environments[env.key]) {
+    return <></>;
+  }
+
   return (
     <Stack
       direction="row"
@@ -51,6 +83,14 @@ export const DashboardFlagListItem = ({
       paddingBottom="3"
       paddingTop="3"
     >
+      <FlagTargetingToggleModal
+        flag={flag}
+        isFlagTargetingOn={isFlagTargetingOn}
+        isOpen={isOpenToggleFlag}
+        onCancel={onCloseToggleFlag}
+        onConfirm={onConfirmToggleFlag}
+        isUpdatingFlag={isUpdatingFlag}
+      />
       <Box flex={3}>
         <HStack>
           <Link color="blue.400" onClick={openFlagDetails}>
@@ -96,8 +136,8 @@ export const DashboardFlagListItem = ({
         <Switch
           size="lg"
           colorScheme="green"
-          isChecked={flag.environments[env.key]?.on}
-          isReadOnly
+          isChecked={isFlagTargetingOn}
+          onChange={openToggleFlag}
         />
       </VStack>
     </Stack>
