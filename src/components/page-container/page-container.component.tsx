@@ -6,7 +6,7 @@ export const PageContainer = ({ children }: React.PropsWithChildren) => {
     <Container maxW="900px" paddingTop="5" paddingBottom="10">
       <ColorModeToggle />
       <Heading paddingTop="3" fontSize="3xl" textAlign="center">
-        launchdarkly scuffed
+        LaunchDarkly Scuffed
       </Heading>
       <Center>
         <Text
@@ -17,7 +17,7 @@ export const PageContainer = ({ children }: React.PropsWithChildren) => {
           maxW="md"
           alignSelf="center"
         >
-          use launchdarkly via api token 🤐
+          Use launchdarkly via api token 🤐
         </Text>
       </Center>
       {children}
