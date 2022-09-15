@@ -1,5 +1,17 @@
 import { CopyIcon } from '@chakra-ui/icons';
-import { Box, Button, HStack, Link, Stack, Tag, Text, Tooltip } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  HStack,
+  Link,
+  Stack,
+  Switch,
+  Tag,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react';
+import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import moment from 'moment';
 import { useCallback, useMemo } from 'react';
@@ -14,6 +26,7 @@ export const DashboardFlagListItem = ({
   setFilter,
   isLastItem,
 }: DashboardFlagListItemInterface) => {
+  const { env } = useLaunchDarklyConfig();
   const { creationDateFormatted, creationDateRelative } = useMemo(() => {
     const creationDateMoment = moment(flag.creationDate);
     return {
@@ -34,11 +47,11 @@ export const DashboardFlagListItem = ({
     <Stack
       direction="row"
       borderBottom={isLastItem ? '0px' : '1px'}
-      borderColor="gray"
-      paddingBottom="2"
-      paddingTop="2"
+      borderColor="gray.600"
+      paddingBottom="3"
+      paddingTop="3"
     >
-      <Box>
+      <Box flex={3}>
         <HStack>
           <Link color="blue.400" onClick={openFlagDetails}>
             <Text fontSize="md" as="b">
@@ -79,6 +92,14 @@ export const DashboardFlagListItem = ({
           <></>
         )}
       </Box>
+      <VStack flex={1} justifyContent="center">
+        <Switch
+          size="lg"
+          colorScheme="green"
+          isChecked={flag.environments[env.key]?.on}
+          isReadOnly
+        />
+      </VStack>
     </Stack>
   );
 };
