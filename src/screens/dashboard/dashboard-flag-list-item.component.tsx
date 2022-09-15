@@ -23,11 +23,13 @@ interface DashboardFlagListItemInterface {
   flag: FlagItem;
   setFilter: (newFilter: string) => void;
   isLastItem: boolean;
+  refetchFlags: () => Promise<void>;
 }
 export const DashboardFlagListItem = ({
   flag,
   setFilter,
   isLastItem,
+  refetchFlags,
 }: DashboardFlagListItemInterface) => {
   const { env } = useLaunchDarklyConfig();
   const {
@@ -58,14 +60,15 @@ export const DashboardFlagListItem = ({
   }, [flag, env]);
 
   const onConfirmToggleFlag = useCallback(
-    ({ comment }: { comment: string }) => {
+    async ({ comment }: { comment: string }) => {
       const instruction = isFlagTargetingOn ? 'turnFlagOff' : 'turnFlagOn';
       console.log('Toggle flag targeting', flag.key, { instruction, comment });
-      onToggleFlagTargeting({
+      await onToggleFlagTargeting({
         flagKey: flag.key,
         instruction,
         comment,
       });
+      refetchFlags();
     },
     [flag, isFlagTargetingOn],
   );

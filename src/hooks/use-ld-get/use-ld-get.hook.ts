@@ -4,7 +4,7 @@ import { launchDarklyApi, LaunchDarklyApiFetchProps } from 'utils/launchdarkly-a
 export interface UseLdGetAPI<T> {
   loading: boolean;
   response: T | null;
-  refetch: (props: LaunchDarklyApiFetchProps) => Promise<void>;
+  refetch: () => Promise<void>;
 }
 
 export const useLdGet = <T>(
@@ -14,15 +14,20 @@ export const useLdGet = <T>(
   const [loading, setLoading] = useState<boolean>(true);
   const [response, setResponse] = useState<T | null>(null);
 
-  const refetch = useCallback(async (fetchProps: LaunchDarklyApiFetchProps) => {
+  const refetchWithProps = useCallback(async (fetchProps: LaunchDarklyApiFetchProps) => {
     const responseJSON = await launchDarklyApi.fetch<T>(fetchProps);
     setResponse(responseJSON);
     setLoading(false);
   }, []);
 
+  const refetch = useCallback(() => {
+    setLoading(true);
+    return refetchWithProps(props);
+  }, [props]);
+
   useEffect(() => {
     setLoading(true);
-    refetch(props);
+    refetchWithProps(props);
   }, dependencyArray);
 
   return {

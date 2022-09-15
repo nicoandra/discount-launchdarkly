@@ -29,7 +29,11 @@ export const DashboardFlagsList = () => {
   }, [filter]);
 
   const { env, projectKey } = useLaunchDarklyConfig();
-  const { loading: loadingFlags, response: flags } = useListFlags({ env: env.key, projectKey });
+  const {
+    loading: loadingFlags,
+    response: flags,
+    refetch: refetchFlags,
+  } = useListFlags({ env: env.key, projectKey });
 
   // console.log({ projectKey, loadingFlags, flags });
 
@@ -66,6 +70,7 @@ export const DashboardFlagsList = () => {
           flag={flag}
           setFilter={setFilter}
           isLastItem={isLastItem}
+          refetchFlags={refetchFlags}
         />
       );
     });
