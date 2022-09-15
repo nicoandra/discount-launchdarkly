@@ -1,5 +1,5 @@
 import React, { useState, ReactNode, useEffect, useCallback } from 'react';
-import { Spinner } from '@chakra-ui/react';
+import { Center, Spinner } from '@chakra-ui/react';
 import {
   EnvironmentItem,
   ListEnvironmentsResponse,
@@ -47,7 +47,13 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
         setEnv,
       }}
     >
-      {loading ? <Spinner /> : children}
+      {loading ? (
+        <Center>
+          <Spinner />
+        </Center>
+      ) : (
+        children
+      )}
     </LaunchDarklyConfigContext.Provider>
   );
 };
