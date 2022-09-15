@@ -1,37 +1,75 @@
 import {
   Box,
-  Button,
   Center,
   HStack,
-  Link,
+  Input,
+  InputGroup,
   Spinner,
-  Stack,
-  Tag,
-  Text,
-  Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { useListFlags } from 'hooks/use-list-flags';
-import moment from 'moment';
 import lodash from 'lodash';
-import { useMemo } from 'react';
-import { CopyIcon } from '@chakra-ui/icons';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { DashboardFlagListItem } from './dashboard-flag-list-item.component';
 
 export const DashboardFlagsList = () => {
   const containerBg = useColorModeValue('white', 'black');
+  const [filter, setFilter] = useState<string>('');
+  const [debouncedFilter, setDebouncedFilter] = useState<string>('');
+
+  const debouncedFilterRef = useRef(
+    lodash.debounce((filter) => {
+      setDebouncedFilter(filter);
+    }, 200),
+  ).current;
+
+  useEffect(() => {
+    debouncedFilterRef(filter);
+  }, [filter]);
 
   const { env, projectKey } = useLaunchDarklyConfig();
   const { loading: loadingFlags, response: flags } = useListFlags({ env: env.key, projectKey });
 
-  console.log({ projectKey, loadingFlags, flags });
+  // console.log({ projectKey, loadingFlags, flags });
 
   const sortedFilteredFlags = useMemo(() => {
     if (!flags?.items?.length) {
       return [];
     }
-    return lodash.orderBy(flags.items, 'creationDate', 'desc');
-  }, [flags]);
+    let filteredFlags = flags.items;
+    const normalizedFilter = (debouncedFilter ?? '').trim().toLocaleLowerCase();
+    if (normalizedFilter.length > 2) {
+      filteredFlags = filteredFlags.filter(
+        (flag) =>
+          flag.key.includes(normalizedFilter) ||
+          flag.name.toLocaleLowerCase().includes(normalizedFilter) ||
+          lodash.find(flag.tags ?? [], (tag) => tag.toLocaleLowerCase().includes(normalizedFilter)),
+      );
+    }
+    return lodash.orderBy(filteredFlags, 'creationDate', 'desc');
+  }, [flags, debouncedFilter]);
+
+  const onChangeFilter = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value);
+  }, []);
+
+  const memoizedFlagItems = useMemo(() => {
+    if (!sortedFilteredFlags?.length) {
+      return <Center>No flags found!</Center>;
+    }
+    return sortedFilteredFlags.map((flag, i, { length }) => {
+      const isLastItem = i + 1 === length;
+      return (
+        <DashboardFlagListItem
+          key={flag.key}
+          flag={flag}
+          setFilter={setFilter}
+          isLastItem={isLastItem}
+        />
+      );
+    });
+  }, [sortedFilteredFlags]);
 
   if (loadingFlags) {
     return (
@@ -41,15 +79,18 @@ export const DashboardFlagsList = () => {
     );
   }
 
-  if (!flags?.items?.length) {
-    return <Center>No flags found for this project/env!</Center>;
-  }
-
   return (
     <Box marginTop="4">
-      <p>
-        Showing <b>{sortedFilteredFlags.length}</b> flags
-      </p>
+      <HStack>
+        <Box>
+          Showing <b>{sortedFilteredFlags.length}</b> flags
+        </Box>
+        <Box minW="400" maxW="400" paddingLeft="4">
+          <InputGroup>
+            <Input placeholder="Filter flags" value={filter} onChange={onChangeFilter} />
+          </InputGroup>
+        </Box>
+      </HStack>
       <Box
         bg={containerBg}
         marginTop="4"
@@ -59,46 +100,7 @@ export const DashboardFlagsList = () => {
         paddingBottom="2"
         borderRadius="md"
       >
-        {sortedFilteredFlags.map((flag) => {
-          return (
-            <Stack
-              direction="row"
-              borderBottom="1px"
-              borderColor="gray"
-              paddingBottom="2"
-              paddingTop="2"
-            >
-              <Box>
-                <HStack>
-                  <Link color="blue.400" onClick={() => console.log('todo:', flag)}>
-                    <Text fontSize="md" as="b">
-                      {flag.name}
-                    </Text>
-                  </Link>
-                  <Tooltip label={moment(flag.creationDate).format()}>
-                    <Text fontSize="sm" color="gray">
-                      Created {moment(flag.creationDate).fromNow()}
-                    </Text>
-                  </Tooltip>
-                </HStack>
-                <Button
-                  marginTop="1"
-                  colorScheme="gray"
-                  size="xs"
-                  onClick={() => navigator.clipboard.writeText(flag.key)}
-                >
-                  {flag.key}
-                  <CopyIcon marginLeft="2" />
-                </Button>
-                <Box marginTop="1">
-                  <Text fontSize="sm" color="gray">
-                    {flag.description}
-                  </Text>
-                </Box>
-              </Box>
-            </Stack>
-          );
-        })}
+        {memoizedFlagItems}
       </Box>
     </Box>
   );
