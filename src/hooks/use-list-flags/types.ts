@@ -95,6 +95,26 @@ export interface FlagItem {
       // };
       offVariation: number; // 1;
       prerequisites: Array<unknown>; // [];
+      // "_summary": {
+      //   "variations": {
+      //     "0": { "rules": 0, "nullRules": 0, "targets": 1, "isFallthrough": true },
+      //     "1": { "rules": 0, "nullRules": 0, "targets": 0, "isOff": true }
+      //   },
+      //   "prerequisites": 0
+      // }
+      _summary: {
+        variations: {
+          // Could be 0, 1, 2, ... (or just a single number)
+          [variationIndex: string]: {
+            rules: number;
+            nullRules: number;
+            targets: number;
+            isOff?: true;
+            isFallthrough?: true;
+          };
+        };
+        prerequisites: 0;
+      };
     };
   };
 }

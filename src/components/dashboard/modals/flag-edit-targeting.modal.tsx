@@ -42,6 +42,23 @@ export const FlagEditTargetingModal = ({
     const hasComment = (comment ?? '').trim().length > 0;
     return hasComment;
   }, [comment]);
+
+  const flagCurrentEnv = flag.environments[env.key];
+
+  const defaultRules = useMemo(() => {
+    // Normally just 0, 1 but could be 0, 1, 2 ,.. or just one number.
+    const variationKeys: Array<string> = Object.keys(flagCurrentEnv._summary.variations);
+    const targetingOnIndex = Number(
+      variationKeys.find((key) => flagCurrentEnv._summary.variations[key].isFallthrough),
+    );
+    const targetingOffIndex = Number(
+      variationKeys.find((key) => flagCurrentEnv._summary.variations[key].isOff),
+    );
+    const targetingOn = flag.variations[targetingOnIndex];
+    const targetingOff = flag.variations[targetingOffIndex];
+    return { targetingOn, targetingOff };
+  }, [flag, flagCurrentEnv]);
+
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="xl">
       <ModalOverlay />
@@ -69,15 +86,15 @@ export const FlagEditTargetingModal = ({
             <FormLabel>
               <b>Prerequisites</b>
             </FormLabel>
-            <pre>{JSON.stringify(flag.environments[env.key]?.prerequisites, null, 2)}</pre>
+            <pre>{JSON.stringify(flagCurrentEnv?.prerequisites, null, 2)}</pre>
             <FormLabel>
               <b>Individual targets</b>
             </FormLabel>
-            <pre>{JSON.stringify(flag.environments[env.key]?.targets, null, 2)}</pre>
+            <pre>{JSON.stringify(flagCurrentEnv?.targets, null, 2)}</pre>
             <FormLabel>
               <b>Rules</b>
             </FormLabel>
-            <pre>{JSON.stringify(flag.environments[env.key]?.rules, null, 2)}</pre>
+            <pre>{JSON.stringify(flagCurrentEnv?.rules, null, 2)}</pre>
           </Box>
           <Box marginTop="3">
             <FormLabel>
@@ -85,17 +102,10 @@ export const FlagEditTargetingModal = ({
             </FormLabel>
             <UnorderedList>
               <ListItem>
-                If targeting is <b>ON</b>, serve{' '}
-                {JSON.stringify(
-                  flag.variations[
-                    flag.environments[env.key].rules[0]?.variation ??
-                      flag.environments[env.key].fallthrough.variation
-                  ],
-                )}
+                If targeting is <b>ON</b>, serve {JSON.stringify(defaultRules.targetingOn)}
               </ListItem>
               <ListItem>
-                If targeting is <b>OFF</b>, serve{' '}
-                {JSON.stringify(flag.variations[flag.environments[env.key].offVariation])}
+                If targeting is <b>OFF</b>, serve {JSON.stringify(defaultRules.targetingOff)}
               </ListItem>
             </UnorderedList>
           </Box>
