@@ -7,6 +7,7 @@ import {
   HStack,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuList,
   Stack,
@@ -52,9 +53,10 @@ export const DashboardFlagListItem = ({
     onClose: onCloseFlagDebug,
   } = useDisclosure();
 
-  const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals } = useUpdateFlag({
-    flagKey: flag.key,
-  });
+  const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals, onSetFlagArchived } =
+    useUpdateFlag({
+      flagKey: flag.key,
+    });
 
   const { creationDateFormatted, creationDateRelative } = useMemo(() => {
     const creationDateMoment = moment(flag.creationDate);
@@ -92,6 +94,16 @@ export const DashboardFlagListItem = ({
     },
     [flag, isFlagTargetingOn],
   );
+
+  const onArchived = useCallback(async () => {
+    if (flag.archived) {
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to archive this flag and deactive it?')) {
+      await onSetFlagArchived({ value: true, comment: 'Archiving flag' });
+    }
+  }, []);
 
   // Temporarily while switching envs, this key doesn't exist:
   if (!flag.environments[env.key]) {
@@ -178,6 +190,10 @@ export const DashboardFlagListItem = ({
             <MenuList>
               <MenuItem onClick={openUpdateFlagGlobals}>Edit global settings</MenuItem>
               <MenuItem onClick={openFlagDebug}>Flag debugger</MenuItem>
+              <MenuDivider />
+              <MenuItem color="red" onClick={onArchived}>
+                Archive flag
+              </MenuItem>
             </MenuList>
           </Menu>
         </Box>

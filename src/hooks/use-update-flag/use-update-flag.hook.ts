@@ -18,7 +18,8 @@ export interface OnUpdateFlagGlobalsInterface {
   comment: string;
 }
 
-interface OnArchiveFlagInterface {
+interface OnSetFlagArchivedInterface {
+  value: boolean;
   comment: string;
 }
 
@@ -26,7 +27,7 @@ interface UseUpdateFlagAPI {
   isUpdatingFlag: boolean;
   onToggleFlagTargeting: (props: OnToggleFlagTargetingInterface) => Promise<FlagItem | null>;
   onUpdateFlagGlobals: (props: OnUpdateFlagGlobalsInterface) => Promise<FlagItem | null>;
-  // onArchiveFlag: (props: OnArchiveFlagInterface) => Promise<FlagItem | null>;
+  onSetFlagArchived: (props: OnSetFlagArchivedInterface) => Promise<FlagItem | null>;
 }
 
 export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAPI => {
@@ -83,36 +84,28 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
     [canUpdate, env],
   );
 
-  // const onArchiveFlag = useCallback(
-  //   ({
-  //     comment,
-  //   }: OnArchiveFlagInterface) => {
-  //     if (!canUpdate) {
-  //       return Promise.resolve(null);
-  //     }
-  //     setIsUpdatingFlag(true);
-  //     const response = launchDarklyApi.semanticPatchFlag({
-  //       projectKey,
-  //       flagKey,
-  //       comment,
-  //       operations: [
-  //         { op: 'archiveFlag', path: '/clientSideAvailability/usingMobileKey', value: usingMobileKey },
-  //         {
-  //           op: 'replace',
-  //           path: '/clientSideAvailability/usingEnvironmentId',
-  //           value: usingEnvironmentId,
-  //         },
-  //       ],
-  //     });
-  //     setIsUpdatingFlag(false);
-  //     return response;
-  //   },
-  //   [canUpdate, env],
-  // );
+  const onSetFlagArchived = useCallback(
+    ({ value, comment }: OnSetFlagArchivedInterface) => {
+      if (!canUpdate) {
+        return Promise.resolve(null);
+      }
+      setIsUpdatingFlag(true);
+      const response = launchDarklyApi.patchFlag({
+        projectKey,
+        flagKey,
+        comment,
+        operations: [{ op: 'replace', path: '/archived', value }],
+      });
+      setIsUpdatingFlag(false);
+      return response;
+    },
+    [canUpdate, env],
+  );
 
   return {
     isUpdatingFlag,
     onToggleFlagTargeting,
     onUpdateFlagGlobals,
+    onSetFlagArchived,
   };
 };

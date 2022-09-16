@@ -20,6 +20,7 @@ export interface FlagItem {
     onVariation: number; // 0;
     offVariation: number; // 1;
   };
+  archived: boolean; // false;
   temporary: boolean; // false;
   tags: Array<string>; // ['ops', 'experiments'];
   maintainerId: string; // '548f6741c1efad40031b18ae';
