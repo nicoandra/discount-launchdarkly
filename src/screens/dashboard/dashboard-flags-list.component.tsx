@@ -92,7 +92,7 @@ export const DashboardFlagsList = () => {
         </Box>
         <Box minW="400" maxW="400" paddingLeft="4">
           <InputGroup>
-            <Input placeholder="Filter flags" value={filter} onChange={onChangeFilter} />
+            <Input autoFocus placeholder="Filter flags" value={filter} onChange={onChangeFilter} />
           </InputGroup>
         </Box>
       </HStack>
