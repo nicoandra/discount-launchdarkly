@@ -1,21 +1,41 @@
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
-import { useLdGet, UseLdGetAPI } from 'hooks/use-ld-get';
+import { FlagItem } from 'hooks/use-list-flags';
 import { useCallback, useMemo, useState } from 'react';
-import { launchDarklyApi, LaunchDarklyProject } from 'utils/launchdarkly-api';
+import { launchDarklyApi } from 'utils/launchdarkly-api';
 
 // https://apidocs.launchdarkly.com/tag/Feature-flags#operation/patchFeatureFlag
 
 interface OnToggleFlagTargetingInterface {
-  flagKey: string;
   instruction: 'turnFlagOff' | 'turnFlagOn';
   comment: string;
 }
-interface UseUpdateFlagAPI {
-  isUpdatingFlag: boolean;
-  onToggleFlagTargeting: (props: OnToggleFlagTargetingInterface) => Promise<unknown>;
+
+interface OnUpdateFlagMetadataInterface {
+  name: string;
+  description: string;
 }
 
-export const useUpdateFlag = (): UseUpdateFlagAPI => {
+interface OnUpdateFlagClientSideAvailabilityInterface {
+  usingMobileKey: boolean;
+  usingEnvironmentId: boolean;
+  comment: string;
+}
+
+interface OnArchiveFlagInterface {
+  comment: string;
+}
+
+interface UseUpdateFlagAPI {
+  isUpdatingFlag: boolean;
+  onToggleFlagTargeting: (props: OnToggleFlagTargetingInterface) => Promise<FlagItem | null>;
+  onUpdateFlagMetadata: (props: OnUpdateFlagMetadataInterface) => Promise<FlagItem | null>;
+  onUpdateFlagClientSideAvailability: (
+    props: OnUpdateFlagClientSideAvailabilityInterface,
+  ) => Promise<FlagItem | null>;
+  // onArchiveFlag: (props: OnArchiveFlagInterface) => Promise<FlagItem | null>;
+}
+
+export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAPI => {
   const [isUpdatingFlag, setIsUpdatingFlag] = useState<boolean>(false);
   const { projectKey, env } = useLaunchDarklyConfig();
   const canUpdate = useMemo(() => {
@@ -23,23 +43,17 @@ export const useUpdateFlag = (): UseUpdateFlagAPI => {
   }, [env, projectKey]);
 
   const onToggleFlagTargeting = useCallback(
-    ({ instruction, comment, flagKey }: OnToggleFlagTargetingInterface) => {
+    ({ instruction, comment }: OnToggleFlagTargetingInterface) => {
       if (!canUpdate) {
-        return Promise.resolve();
+        return Promise.resolve(null);
       }
       setIsUpdatingFlag(true);
-
-      const response = launchDarklyApi.fetch<unknown>({
-        path: `/api/v2/flags/${projectKey}/${flagKey}`,
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json; domain-model=launchdarkly.semanticpatch',
-        },
-        body: JSON.stringify({
-          environmentKey: env.key,
-          instructions: [{ kind: instruction }],
-          comment,
-        }),
+      const response = launchDarklyApi.semanticPatchFlag({
+        projectKey,
+        flagKey,
+        environmentKey: env.key,
+        instructions: [{ kind: instruction }],
+        comment,
       });
       setIsUpdatingFlag(false);
       return response;
@@ -47,5 +61,87 @@ export const useUpdateFlag = (): UseUpdateFlagAPI => {
     [canUpdate, env],
   );
 
-  return { isUpdatingFlag, onToggleFlagTargeting };
+  const onUpdateFlagMetadata = useCallback(
+    ({ name, description }: OnUpdateFlagMetadataInterface) => {
+      if (!canUpdate) {
+        return Promise.resolve(null);
+      }
+      setIsUpdatingFlag(true);
+      const response = launchDarklyApi.patchFlag({
+        projectKey,
+        flagKey,
+        comment: 'Updating name / description',
+        operations: [
+          { op: 'replace', path: '/name', value: name },
+          { op: 'replace', path: '/description', value: description },
+        ],
+      });
+      setIsUpdatingFlag(false);
+      return response;
+    },
+    [canUpdate, env],
+  );
+
+  const onUpdateFlagClientSideAvailability = useCallback(
+    ({
+      usingMobileKey,
+      usingEnvironmentId,
+      comment,
+    }: OnUpdateFlagClientSideAvailabilityInterface) => {
+      if (!canUpdate) {
+        return Promise.resolve(null);
+      }
+      setIsUpdatingFlag(true);
+      const response = launchDarklyApi.patchFlag({
+        projectKey,
+        flagKey,
+        comment,
+        operations: [
+          { op: 'replace', path: '/clientSideAvailability/usingMobileKey', value: usingMobileKey },
+          {
+            op: 'replace',
+            path: '/clientSideAvailability/usingEnvironmentId',
+            value: usingEnvironmentId,
+          },
+        ],
+      });
+      setIsUpdatingFlag(false);
+      return response;
+    },
+    [canUpdate, env],
+  );
+
+  // const onArchiveFlag = useCallback(
+  //   ({
+  //     comment,
+  //   }: OnArchiveFlagInterface) => {
+  //     if (!canUpdate) {
+  //       return Promise.resolve(null);
+  //     }
+  //     setIsUpdatingFlag(true);
+  //     const response = launchDarklyApi.semanticPatchFlag({
+  //       projectKey,
+  //       flagKey,
+  //       comment,
+  //       operations: [
+  //         { op: 'archiveFlag', path: '/clientSideAvailability/usingMobileKey', value: usingMobileKey },
+  //         {
+  //           op: 'replace',
+  //           path: '/clientSideAvailability/usingEnvironmentId',
+  //           value: usingEnvironmentId,
+  //         },
+  //       ],
+  //     });
+  //     setIsUpdatingFlag(false);
+  //     return response;
+  //   },
+  //   [canUpdate, env],
+  // );
+
+  return {
+    isUpdatingFlag,
+    onToggleFlagTargeting,
+    onUpdateFlagMetadata,
+    onUpdateFlagClientSideAvailability,
+  };
 };

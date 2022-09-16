@@ -16,8 +16,9 @@ import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { useUpdateFlag } from 'hooks/use-update-flag';
 import moment from 'moment';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { FlagTargetingToggleModal } from './flag-targeting-toggle.modal';
+import { FlagUpdateModal } from './flag-update.modal';
 
 interface DashboardFlagListItemInterface {
   flag: FlagItem;
@@ -37,7 +38,14 @@ export const DashboardFlagListItem = ({
     isOpen: isOpenToggleFlag,
     onClose: onCloseToggleFlag,
   } = useDisclosure();
-  const { isUpdatingFlag, onToggleFlagTargeting } = useUpdateFlag();
+  const {
+    onOpen: openUpdateFlag,
+    isOpen: isOpenUpdateFlag,
+    onClose: onCloseUpdateFlag,
+  } = useDisclosure();
+  const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagMetadata } = useUpdateFlag({
+    flagKey: flag.key,
+  });
 
   const { creationDateFormatted, creationDateRelative } = useMemo(() => {
     const creationDateMoment = moment(flag.creationDate);
@@ -51,10 +59,6 @@ export const DashboardFlagListItem = ({
     navigator.clipboard.writeText(flag.key);
   }, [flag.key]);
 
-  const openFlagDetails = useCallback(() => {
-    console.log('todo: open flag', flag);
-  }, [flag]);
-
   const isFlagTargetingOn = useMemo(() => {
     return flag.environments[env.key]?.on;
   }, [flag, env]);
@@ -64,9 +68,19 @@ export const DashboardFlagListItem = ({
       const instruction = isFlagTargetingOn ? 'turnFlagOff' : 'turnFlagOn';
       console.log('Toggle flag targeting', flag.key, { instruction, comment });
       await onToggleFlagTargeting({
-        flagKey: flag.key,
         instruction,
         comment,
+      });
+      refetchFlags();
+    },
+    [flag, isFlagTargetingOn],
+  );
+
+  const onConfirmUpdateMetadata = useCallback(
+    async ({ name, description }: { name: string; description: string }) => {
+      await onUpdateFlagMetadata({
+        name,
+        description,
       });
       refetchFlags();
     },
@@ -94,9 +108,16 @@ export const DashboardFlagListItem = ({
         onConfirm={onConfirmToggleFlag}
         isUpdatingFlag={isUpdatingFlag}
       />
+      <FlagUpdateModal
+        flag={flag}
+        isOpen={isOpenUpdateFlag}
+        onCancel={onCloseUpdateFlag}
+        onConfirmUpdateMetadata={onConfirmUpdateMetadata}
+        isUpdatingFlag={isUpdatingFlag}
+      />
       <Box flex={3}>
         <HStack>
-          <Link color="blue.400" onClick={openFlagDetails}>
+          <Link color="blue.400" onClick={openUpdateFlag}>
             <Text fontSize="md" as="b">
               {flag.name}
             </Text>

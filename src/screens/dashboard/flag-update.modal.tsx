@@ -18,34 +18,41 @@ import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { useMemo, useState } from 'react';
 
-export const FlagTargetingToggleModal = ({
+export const FlagUpdateModal = ({
   flag,
-  isFlagTargetingOn,
   isOpen,
   onCancel,
-  onConfirm,
+  onConfirmUpdateMetadata,
   isUpdatingFlag,
 }: {
   flag: FlagItem;
-  isFlagTargetingOn: boolean;
   isUpdatingFlag: boolean;
   isOpen: boolean;
-  onConfirm: ({ comment }: { comment: string }) => void;
+  onConfirmUpdateMetadata: ({
+    name,
+    description,
+    comment,
+  }: {
+    name: string;
+    description: string;
+    comment: string;
+  }) => void;
   onCancel: () => void;
 }) => {
-  const newTargeting = isFlagTargetingOn ? 'OFF' : 'ON';
   const { env } = useLaunchDarklyConfig();
   const [comment, setComment] = useState<string>('');
+  const [name, setName] = useState<string>(flag.name);
+  const [description, setDescription] = useState<string>(flag.description);
   const canConfirm = useMemo(() => {
-    return (comment ?? '').trim().length > 0;
-  }, [comment]);
+    const hasComment = (comment ?? '').trim().length > 0;
+    const hasName = (name ?? '').trim().length > 0;
+    return hasComment && hasName;
+  }, [comment, name]);
   return (
-    <Modal isOpen={isOpen} onClose={onCancel}>
+    <Modal isOpen={isOpen} onClose={onCancel} size="xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
-          Turn <u>{newTargeting}</u> targeting
-        </ModalHeader>
+        <ModalHeader>Modify flag</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <UnorderedList>
@@ -63,8 +70,19 @@ export const FlagTargetingToggleModal = ({
             <ListItem>
               Flag: <Tag size="sm">{flag.key}</Tag>
             </ListItem>
-            <ListItem>New targeting value: {newTargeting}</ListItem>
           </UnorderedList>
+          <Box marginTop="3">
+            <FormLabel> Name</FormLabel>
+            <Input placeholder="Flag name" value={name} onChange={(e) => setName(e.target.value)} />
+          </Box>
+          <Box marginTop="3">
+            <FormLabel>Description</FormLabel>
+            <Input
+              placeholder="Flag description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </Box>
           <Box marginTop="3">
             <FormLabel>Comment</FormLabel>
             <Input
@@ -73,21 +91,17 @@ export const FlagTargetingToggleModal = ({
               onChange={(e) => setComment(e.target.value)}
             />
           </Box>
+          <Box marginTop="3">
+            <Button
+              colorScheme="gray"
+              disabled={!canConfirm || isUpdatingFlag}
+              isLoading={isUpdatingFlag}
+              onClick={() => onConfirmUpdateMetadata({ name, description, comment })}
+            >
+              Update name & description
+            </Button>
+          </Box>
         </ModalBody>
-
-        <ModalFooter>
-          <Button disabled={isUpdatingFlag} colorScheme="gray" mr={3} onClick={onCancel}>
-            Cancel
-          </Button>
-          <Button
-            colorScheme="gray"
-            disabled={!canConfirm || isUpdatingFlag}
-            isLoading={isUpdatingFlag}
-            onClick={() => onConfirm({ comment })}
-          >
-            Save changes
-          </Button>
-        </ModalFooter>
       </ModalContent>
     </Modal>
   );

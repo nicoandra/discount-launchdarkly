@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import lodash from 'lodash';
+import { FlagItem } from 'hooks/use-list-flags/types';
 import { getApiKeyOrThrow } from './env';
 
 export enum LaunchDarklyProject {
@@ -53,6 +54,61 @@ class LaunchDarklyApi {
     });
     const json: T = await response.json();
     return json;
+  }
+
+  async patchFlag({
+    projectKey,
+    flagKey,
+    operations,
+    comment,
+  }: {
+    projectKey: LaunchDarklyProject;
+    flagKey: string;
+    operations: Array<{
+      op: 'replace' | 'add'; // e.g. "replace". "remove"?
+      path: string; // e.g. "/description"
+      value: string | number | boolean; // "new value"
+    }>;
+    comment: string;
+  }): Promise<FlagItem | null> {
+    return launchDarklyApi.fetch<FlagItem | null>({
+      path: `/api/v2/flags/${projectKey}/${flagKey}`,
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        patch: operations,
+        comment,
+      }),
+    });
+  }
+
+  async semanticPatchFlag({
+    projectKey,
+    flagKey,
+    environmentKey,
+    instructions,
+    comment,
+  }: {
+    projectKey: LaunchDarklyProject;
+    flagKey: string;
+    environmentKey: string;
+    instructions: Array<Record<string, any>>;
+    comment?: string;
+  }): Promise<FlagItem | null> {
+    return launchDarklyApi.fetch<FlagItem | null>({
+      path: `/api/v2/flags/${projectKey}/${flagKey}`,
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json; domain-model=launchdarkly.semanticpatch',
+      },
+      body: JSON.stringify({
+        environmentKey: environmentKey,
+        instructions,
+        comment,
+      }),
+    });
   }
 }
 
