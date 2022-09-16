@@ -1,7 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import lodash from 'lodash';
 import { FlagItem } from 'hooks/use-list-flags/types';
-import { getApiKeyOrThrow } from './env';
 
 export enum LaunchDarklyProject {
   DEFAULT = 'default',
@@ -21,7 +20,7 @@ class LaunchDarklyApi {
   apiKey: string;
 
   constructor() {
-    this.apiKey = getApiKeyOrThrow();
+    this.apiKey = process.env.REACT_APP_LAUNCHDARKLY_API_KEY as string;
   }
 
   async fetch<T>({
