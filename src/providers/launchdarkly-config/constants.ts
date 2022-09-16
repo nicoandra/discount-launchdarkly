@@ -1,6 +1,4 @@
-import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
-
-export const DEFAULT_PROJECT_KEY = LaunchDarklyProject.DEFAULT;
+export const DEFAULT_PROJECT_KEY = 'default';
 
 export enum AccessTokenPermission {
   READER = 'reader',

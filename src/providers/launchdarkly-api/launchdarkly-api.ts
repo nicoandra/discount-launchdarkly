@@ -2,11 +2,6 @@ import fetch from 'isomorphic-fetch';
 import lodash from 'lodash';
 import { FlagItem } from 'hooks/use-list-flags/types';
 
-export enum LaunchDarklyProject {
-  DEFAULT = 'default',
-  ORDERUP = 'orderup',
-}
-
 export interface LaunchDarklyApiFetchProps {
   path: string;
   query?: Record<string, string | null>;
@@ -61,7 +56,7 @@ export class LaunchDarklyApi {
     operations,
     comment,
   }: {
-    projectKey: LaunchDarklyProject;
+    projectKey: string;
     flagKey: string;
     operations: Array<{
       op: 'replace' | 'add'; // e.g. "replace". "remove"?
@@ -91,7 +86,7 @@ export class LaunchDarklyApi {
     comment,
     ignoreConflicts,
   }: {
-    projectKey: LaunchDarklyProject;
+    projectKey: string;
     flagKey: string;
     environmentKey: string;
     instructions: Array<Record<string, any>>;

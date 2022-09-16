@@ -11,11 +11,9 @@ import {
   IconButton,
   Menu,
   MenuButton,
-  MenuItem,
   MenuItemOption,
   MenuList,
   MenuOptionGroup,
-  Switch,
 } from '@chakra-ui/react';
 import { SettingsIcon } from '@chakra-ui/icons';
 

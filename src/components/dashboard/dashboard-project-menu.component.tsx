@@ -1,10 +1,9 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
-import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 
 export const DashboardProjectMenu = () => {
-  const { projectKey, setProjectKey } = useLaunchDarklyConfig();
+  const { projectKey, setProjectKey, projects } = useLaunchDarklyConfig();
 
   return (
     <Menu>
@@ -12,12 +11,15 @@ export const DashboardProjectMenu = () => {
         Project: {projectKey}
       </MenuButton>
       <MenuList>
-        <MenuItem minH="48px" onClick={() => setProjectKey(LaunchDarklyProject.DEFAULT)}>
-          <span>default</span>
-        </MenuItem>
-        <MenuItem minH="40px" onClick={() => setProjectKey(LaunchDarklyProject.ORDERUP)}>
-          <span>orderup</span>
-        </MenuItem>
+        {projects.map((project) => {
+          return (
+            <MenuItem minH="48px" key={project.key} onClick={() => setProjectKey(project.key)}>
+              <span>
+                {project.key} ({project.name})
+              </span>
+            </MenuItem>
+          );
+        })}
       </MenuList>
     </Menu>
   );

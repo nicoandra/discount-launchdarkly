@@ -5,21 +5,22 @@ import {
   ListEnvironmentsResponse,
   useListEnvironments,
 } from 'hooks/use-list-environments';
-import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 import { LaunchDarklyConfigContext } from './launchdarkly-config.context';
 import { useListAccessTokens } from 'hooks/use-list-access-tokens';
 import { useLaunchDarklyApi } from 'hooks/use-launchdarkly-api';
+import { DEFAULT_PROJECT_KEY } from './constants';
+import { useListProjects } from 'hooks/use-list-projects';
 
 interface LaunchDarklyConfigProviderProps {
   children: ReactNode;
 }
 export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProviderProps) => {
   const { apiKey } = useLaunchDarklyApi();
-  const [projectKey, setProjectKey] = useState<LaunchDarklyProject>(LaunchDarklyProject.DEFAULT);
+  const [projectKey, setProjectKey] = useState<string>(DEFAULT_PROJECT_KEY);
   const [env, setEnv] = useState<EnvironmentItem | null>(null);
 
   const onSetProjectKey = useCallback(
-    (newProjectKey: LaunchDarklyProject) => {
+    (newProjectKey: string) => {
       // important: reset env sot that it doesn't trigger requests to the wrong env:
       setEnv(null);
       setProjectKey(newProjectKey);
@@ -27,11 +28,21 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
     [setProjectKey],
   );
 
+  const { loading: loadingProjects, response: projects } = useListProjects();
+
   const { loading: loadingEnvironments, response: environments } = useListEnvironments({
     projectKey,
   });
 
   const { loading: loadingAccessTokens, response: accessTokens } = useListAccessTokens();
+
+  useEffect(() => {
+    if (projects?.items?.length) {
+      const defaultProject =
+        projects.items.find((project) => project.key === DEFAULT_PROJECT_KEY) ?? projects.items[0];
+      setProjectKey(defaultProject.key);
+    }
+  }, [projects]);
 
   useEffect(() => {
     if (environments?.items?.length) {
@@ -55,6 +66,7 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
         loading,
         projectKey,
         setProjectKey: onSetProjectKey,
+        projects: projects?.items ?? [],
         env: env as EnvironmentItem,
         envs: environments as ListEnvironmentsResponse,
         setEnv,
