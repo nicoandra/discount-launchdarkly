@@ -1,5 +1,4 @@
 import { useLdGet, UseLdGetAPI } from 'hooks/use-ld-get';
-import { DEFAULT_PROJECT_KEY } from 'providers/launchdarkly-config/constants';
 
 export interface EnvironmentItem {
   _id: string; // "57be1db38b75bf0772d11384",
@@ -31,10 +30,10 @@ export interface ListEnvironmentsResponse {
 }
 
 interface UseListEnvironmentsInterface {
-  projectKey?: string;
+  projectKey: string;
 }
 export const useListEnvironments = ({
-  projectKey = DEFAULT_PROJECT_KEY,
+  projectKey,
 }: UseListEnvironmentsInterface): UseLdGetAPI<ListEnvironmentsResponse> => {
   // https://apidocs.launchdarkly.com/tag/Environments#operation/getEnvironmentsByProject
   return useLdGet<ListEnvironmentsResponse>(

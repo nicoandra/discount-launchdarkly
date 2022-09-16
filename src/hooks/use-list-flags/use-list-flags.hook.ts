@@ -1,5 +1,4 @@
 import { useLdGet, UseLdGetAPI } from 'hooks/use-ld-get';
-import { DEFAULT_PROJECT_KEY } from 'providers/launchdarkly-config/constants';
 import { FlagItem } from './types';
 
 export interface ListFlagsResponse {
@@ -14,7 +13,7 @@ interface UseFlagsInterface {
 }
 export const useListFlags = ({
   env,
-  projectKey = DEFAULT_PROJECT_KEY,
+  projectKey,
   archived,
 }: UseFlagsInterface): UseLdGetAPI<ListFlagsResponse> => {
   // https://apidocs.launchdarkly.com/tag/Feature-flags#operation/getFeatureFlags
