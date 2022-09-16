@@ -1,5 +1,7 @@
+import { useLaunchDarklyApi } from 'hooks/use-launchdarkly-api';
+import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { useCallback, useEffect, useState } from 'react';
-import { launchDarklyApi, LaunchDarklyApiFetchProps } from 'utils/launchdarkly-api';
+import { LaunchDarklyApiFetchProps } from 'utils/launchdarkly-api';
 
 export interface UseLdGetAPI<T> {
   loading: boolean;
@@ -13,6 +15,7 @@ export const useLdGet = <T>(
 ): UseLdGetAPI<T> => {
   const [loading, setLoading] = useState<boolean>(true);
   const [response, setResponse] = useState<T | null>(null);
+  const { launchDarklyApi } = useLaunchDarklyApi();
 
   const refetchWithProps = useCallback(async (fetchProps: LaunchDarklyApiFetchProps) => {
     const responseJSON = await launchDarklyApi.fetch<T>(fetchProps);

@@ -1,17 +1,22 @@
-import React, { ReactNode } from 'react';
-import { Center, Code, Container, Spinner, Text } from '@chakra-ui/react';
-import { EnforceApiKeyPresenceContext } from './enforce-api-key-presence.context';
+import React, { ReactNode, useMemo } from 'react';
+import { Center, Code, Container, Text } from '@chakra-ui/react';
+import { LaunchDarklyApiContext } from './launchdarkly-api.context';
+import { LaunchDarklyApi } from 'utils/launchdarkly-api';
 
-interface EnforceApiKeyPresenceProviderProps {
+interface LaunchDarklyApiProviderProps {
   children: ReactNode;
 }
-export const EnforceApiKeyPresenceProvider = ({ children }: EnforceApiKeyPresenceProviderProps) => {
+export const LaunchDarklyApiProvider = ({ children }: LaunchDarklyApiProviderProps) => {
   // Consider letting user specify in localStorage/etc
   const apiKey = process.env.REACT_APP_LAUNCHDARKLY_API_KEY;
+  const launchDarklyApi = useMemo(() => {
+    return new LaunchDarklyApi({ apiKey: apiKey as string });
+  }, [apiKey]);
   return (
-    <EnforceApiKeyPresenceContext.Provider
+    <LaunchDarklyApiContext.Provider
       value={{
         apiKey,
+        launchDarklyApi,
       }}
     >
       {apiKey ? (
@@ -27,6 +32,6 @@ export const EnforceApiKeyPresenceProvider = ({ children }: EnforceApiKeyPresenc
           </Center>
         </Container>
       )}
-    </EnforceApiKeyPresenceContext.Provider>
+    </LaunchDarklyApiContext.Provider>
   );
 };

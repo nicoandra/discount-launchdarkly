@@ -16,11 +16,11 @@ export interface LaunchDarklyApiFetchProps {
   headers?: Record<string, string>;
 }
 
-class LaunchDarklyApi {
+export class LaunchDarklyApi {
   apiKey: string;
 
-  constructor() {
-    this.apiKey = process.env.REACT_APP_LAUNCHDARKLY_API_KEY as string;
+  constructor({ apiKey }: { apiKey: string }) {
+    this.apiKey = apiKey;
   }
 
   async fetch<T>({
@@ -70,7 +70,7 @@ class LaunchDarklyApi {
     }>;
     comment: string;
   }): Promise<FlagItem | null> {
-    return launchDarklyApi.fetch<FlagItem | null>({
+    return this.fetch<FlagItem | null>({
       path: `/api/v2/flags/${projectKey}/${flagKey}`,
       method: 'PATCH',
       headers: {
@@ -96,7 +96,7 @@ class LaunchDarklyApi {
     instructions: Array<Record<string, any>>;
     comment?: string;
   }): Promise<FlagItem | null> {
-    return launchDarklyApi.fetch<FlagItem | null>({
+    return this.fetch<FlagItem | null>({
       path: `/api/v2/flags/${projectKey}/${flagKey}`,
       method: 'PATCH',
       headers: {
@@ -110,5 +110,3 @@ class LaunchDarklyApi {
     });
   }
 }
-
-export const launchDarklyApi = new LaunchDarklyApi();

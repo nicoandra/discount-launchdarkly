@@ -48,7 +48,7 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
       }}
     >
       {loading ? (
-        <Center>
+        <Center minH="300" justifyContent={'center'}>
           <Spinner />
         </Center>
       ) : (

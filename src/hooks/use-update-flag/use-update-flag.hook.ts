@@ -1,7 +1,7 @@
+import { useLaunchDarklyApi } from 'hooks/use-launchdarkly-api';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { useCallback, useMemo, useState } from 'react';
-import { launchDarklyApi } from 'utils/launchdarkly-api';
 
 // https://apidocs.launchdarkly.com/tag/Feature-flags#operation/patchFeatureFlag
 
@@ -31,6 +31,7 @@ interface UseUpdateFlagAPI {
 
 export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAPI => {
   const [isUpdatingFlag, setIsUpdatingFlag] = useState<boolean>(false);
+  const { launchDarklyApi } = useLaunchDarklyApi();
   const { projectKey, env } = useLaunchDarklyConfig();
   const canUpdate = useMemo(() => {
     return !!env && !!projectKey;
