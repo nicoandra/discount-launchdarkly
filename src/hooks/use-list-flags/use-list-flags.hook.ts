@@ -1,5 +1,5 @@
 import { useLdGet, UseLdGetAPI } from 'hooks/use-ld-get';
-import { LaunchDarklyProject } from 'utils/launchdarkly-api';
+import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 import { FlagItem } from './types';
 
 export interface ListFlagsResponse {

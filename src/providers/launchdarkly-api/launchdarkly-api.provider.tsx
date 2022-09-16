@@ -1,7 +1,7 @@
 import React, { ReactNode, useMemo } from 'react';
 import { Center, Code, Container, Text } from '@chakra-ui/react';
 import { LaunchDarklyApiContext } from './launchdarkly-api.context';
-import { LaunchDarklyApi } from 'utils/launchdarkly-api';
+import { LaunchDarklyApi } from 'providers/launchdarkly-api/launchdarkly-api';
 
 interface LaunchDarklyApiProviderProps {
   children: ReactNode;

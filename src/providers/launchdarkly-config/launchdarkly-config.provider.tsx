@@ -5,7 +5,7 @@ import {
   ListEnvironmentsResponse,
   useListEnvironments,
 } from 'hooks/use-list-environments';
-import { LaunchDarklyProject } from 'utils/launchdarkly-api';
+import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 import { LaunchDarklyConfigContext } from './launchdarkly-config.context';
 
 interface LaunchDarklyConfigProviderProps {

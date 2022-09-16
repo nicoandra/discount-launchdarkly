@@ -1,5 +1,5 @@
 import { useLdGet, UseLdGetAPI } from 'hooks/use-ld-get';
-import { LaunchDarklyProject } from 'utils/launchdarkly-api';
+import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 
 export interface EnvironmentItem {
   _id: string; // "57be1db38b75bf0772d11384",

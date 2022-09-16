@@ -1,6 +1,6 @@
 import { useLaunchDarklyApi } from 'hooks/use-launchdarkly-api';
 import { useCallback, useEffect, useState } from 'react';
-import { LaunchDarklyApiFetchProps } from 'utils/launchdarkly-api';
+import { LaunchDarklyApiFetchProps } from 'providers/launchdarkly-api/launchdarkly-api';
 
 export interface UseLdGetAPI<T> {
   loading: boolean;

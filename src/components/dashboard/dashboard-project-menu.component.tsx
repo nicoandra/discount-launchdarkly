@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from '@chakra-ui/icons';
 import { Button, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
-import { LaunchDarklyProject } from 'utils/launchdarkly-api';
+import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 
 export const DashboardProjectMenu = () => {
   const { projectKey, setProjectKey } = useLaunchDarklyConfig();

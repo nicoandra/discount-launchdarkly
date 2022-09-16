@@ -1,6 +1,6 @@
 import { EnvironmentItem, ListEnvironmentsResponse } from 'hooks/use-list-environments';
 import { createContext } from 'react';
-import { LaunchDarklyProject } from 'utils/launchdarkly-api';
+import { LaunchDarklyProject } from 'providers/launchdarkly-api/launchdarkly-api';
 import { DEFAULT_PROJECT_KEY } from './constants';
 
 export interface LaunchDarklyConfigContextAPI {

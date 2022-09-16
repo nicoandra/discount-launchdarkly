@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { LaunchDarklyApi } from 'utils/launchdarkly-api';
+import { LaunchDarklyApi } from 'providers/launchdarkly-api/launchdarkly-api';
 
 export interface LaunchDarklyApiContextAPI {
   apiKey: string | undefined;
