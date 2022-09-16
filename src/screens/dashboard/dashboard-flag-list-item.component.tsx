@@ -1,16 +1,18 @@
-import { CopyIcon } from '@chakra-ui/icons';
+import { ChevronDownIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Box,
   Button,
   HStack,
-  Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Stack,
   Switch,
   Tag,
   Text,
   Tooltip,
   useDisclosure,
-  VStack,
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
@@ -39,9 +41,9 @@ export const DashboardFlagListItem = ({
     onClose: onCloseToggleFlag,
   } = useDisclosure();
   const {
-    onOpen: openUpdateFlag,
-    isOpen: isOpenUpdateFlag,
-    onClose: onCloseUpdateFlag,
+    onOpen: openUpdateFlagGlobals,
+    isOpen: isOpenUpdateFlagGlobals,
+    onClose: onCloseUpdateFlagGlobals,
   } = useDisclosure();
   const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals } = useUpdateFlag({
     flagKey: flag.key,
@@ -107,18 +109,16 @@ export const DashboardFlagListItem = ({
       />
       <FlagUpdateModal
         flag={flag}
-        isOpen={isOpenUpdateFlag}
-        onCancel={onCloseUpdateFlag}
+        isOpen={isOpenUpdateFlagGlobals}
+        onCancel={onCloseUpdateFlagGlobals}
         onConfirmUpdateGlobals={onConfirmUpdateGlobals}
         isUpdatingFlag={isUpdatingFlag}
       />
-      <Box flex={3}>
+      <Box flex={5}>
         <HStack>
-          <Link color="blue.400" onClick={openUpdateFlag}>
-            <Text fontSize="md" as="b">
-              {flag.name}
-            </Text>
-          </Link>
+          <Text fontSize="md" as="b">
+            {flag.name}
+          </Text>
           <Tooltip label={creationDateFormatted}>
             <Text fontSize="xs" color="gray">
               Created {creationDateRelative}
@@ -153,14 +153,26 @@ export const DashboardFlagListItem = ({
           <></>
         )}
       </Box>
-      <VStack flex={1} justifyContent="center">
+      <Box flex={1}></Box>
+      <HStack flex={2} justifyContent="right">
+        <Text>Targeting:</Text>
         <Switch
           size="lg"
           colorScheme="green"
           isChecked={isFlagTargetingOn}
           onChange={openToggleFlag}
         />
-      </VStack>
+        <Box paddingLeft="2">
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              Actions
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={openUpdateFlagGlobals}>Edit global settings</MenuItem>
+            </MenuList>
+          </Menu>
+        </Box>
+      </HStack>
     </Stack>
   );
 };
