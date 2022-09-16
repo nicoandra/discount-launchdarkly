@@ -14,7 +14,7 @@ export const EnforceApiKeyPresenceProvider = ({ children }: EnforceApiKeyPresenc
         apiKey,
       }}
     >
-      {!apiKey ? (
+      {apiKey ? (
         children
       ) : (
         <Container>
