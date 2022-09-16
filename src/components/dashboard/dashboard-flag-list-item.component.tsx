@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react';
+import moment from 'moment';
 import { ChevronDownIcon, CopyIcon } from '@chakra-ui/icons';
 import {
   Box,
@@ -18,11 +20,7 @@ import {
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { OnUpdateFlagGlobalsInterface, useUpdateFlag } from 'hooks/use-update-flag';
-import moment from 'moment';
-import { useCallback, useMemo } from 'react';
-import { FlagDebugModal } from './flag-debug.modal';
-import { FlagTargetingToggleModal } from './flag-targeting-toggle.modal';
-import { FlagUpdateModal } from './flag-update.modal';
+import { FlagDebugModal, FlagUpdateModal, FlagTargetingToggleModal } from './modals';
 
 interface DashboardFlagListItemInterface {
   flag: FlagItem;
