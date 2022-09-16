@@ -13,14 +13,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Tag,
   UnorderedList,
 } from '@chakra-ui/react';
+import { VariationSelect } from 'components/variation-select';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { OnUpdateFlagIndividualTargetsInterface } from 'hooks/use-update-flag';
 import { useMemo, useState } from 'react';
+import lodash from 'lodash';
 
 export const FlagEditIndividualTargetsModal = ({
   flag,
@@ -37,10 +38,24 @@ export const FlagEditIndividualTargetsModal = ({
 }) => {
   const { env } = useLaunchDarklyConfig();
   const [comment, setComment] = useState<string>('');
+  const [addUsersCsv, setAddUsersCsv] = useState<string>('');
+  const [removeUsersCsv, setRemoveUsersCsv] = useState<string>('');
+
+  const addUsers = useMemo(() => {
+    const normalizedUsers = addUsersCsv.split(',').map((user) => user.trim());
+    return lodash.compact(normalizedUsers);
+  }, [addUsersCsv]);
+
+  const removeUsers = useMemo(() => {
+    const normalizedUsers = removeUsersCsv.split(',').map((user) => user.trim());
+    return lodash.compact(normalizedUsers);
+  }, [removeUsersCsv]);
+
   const canConfirm = useMemo(() => {
     const hasComment = (comment ?? '').trim().length > 0;
-    return hasComment;
-  }, [comment]);
+    const hasAddOrRemove = addUsers.length > 0 || removeUsers.length > 0;
+    return hasComment && hasAddOrRemove;
+  }, [comment, addUsers, removeUsers]);
 
   const flagCurrentEnv = flag.environments[env.key];
 
@@ -53,6 +68,14 @@ export const FlagEditIndividualTargetsModal = ({
       };
     });
   }, [flag, flagCurrentEnv]);
+
+  const [currentVariationId, setCurrentVariationId] = useState<string>(flag.variations[0]._id);
+
+  const existingTargetsForCurrentVariation = useMemo(() => {
+    return (
+      existingTargets.find((targets) => targets.variation._id === currentVariationId)?.targets ?? []
+    );
+  }, [currentVariationId]);
 
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="xl">
@@ -78,10 +101,42 @@ export const FlagEditIndividualTargetsModal = ({
             </ListItem>
           </UnorderedList>
           <Box marginTop="5">
-            <FormLabel>Existing targets:</FormLabel>
-            <pre>{JSON.stringify(existingTargets, null, 2)}</pre>
+            <FormLabel>Select variation to individually target:</FormLabel>
+            <VariationSelect
+              flag={flag}
+              variationId={currentVariationId}
+              setVariationId={setCurrentVariationId}
+            />
           </Box>
-          <Box marginTop="3">
+          <Box marginTop="5">
+            <FormLabel>Existing targets:</FormLabel>
+            {existingTargetsForCurrentVariation.length ? (
+              <UnorderedList>
+                {existingTargetsForCurrentVariation.map((target) => {
+                  return <ListItem key={target}>{target}</ListItem>;
+                })}
+              </UnorderedList>
+            ) : (
+              <p>No existing targets</p>
+            )}
+          </Box>
+          <Box marginTop="5">
+            <FormLabel>Add new targets (comma-separated user IDs):</FormLabel>
+            <Input
+              placeholder="user-1,user-2,user-3"
+              value={addUsersCsv}
+              onChange={(e) => setAddUsersCsv(e.target.value)}
+            />
+          </Box>
+          <Box marginTop="5">
+            <FormLabel>Remove targets (comma-separated user IDs):</FormLabel>
+            <Input
+              placeholder="user-1,user-2,user-3"
+              value={removeUsersCsv}
+              onChange={(e) => setRemoveUsersCsv(e.target.value)}
+            />
+          </Box>
+          <Box marginTop="5">
             <FormLabel>Comment</FormLabel>
             <Input
               placeholder="Enter comment describing your change"
@@ -98,46 +153,28 @@ export const FlagEditIndividualTargetsModal = ({
             colorScheme="gray"
             disabled={!canConfirm || isUpdatingFlag}
             isLoading={isUpdatingFlag}
-            onClick={
-              () => {}
-              // onConfirm({
-              //   comment,
-              // })
-            }
+            onClick={() => {
+              onConfirm({
+                comment,
+                addUserTargets: [
+                  {
+                    variationId: currentVariationId,
+                    values: addUsers,
+                  },
+                ],
+                removeUserTargets: [
+                  {
+                    variationId: currentVariationId,
+                    values: removeUsers,
+                  },
+                ],
+              });
+            }}
           >
             Save changes
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
-  );
-};
-
-const VariationSelect = ({
-  flag,
-  variationId,
-  setVariationId,
-}: {
-  flag: FlagItem;
-  variationId: string | null;
-  setVariationId: (variationId: string) => void;
-}) => {
-  return (
-    <Select
-      variant="outline"
-      value={variationId ?? 'rollout'}
-      onChange={(e) => setVariationId(e.target.value as any)}
-    >
-      {flag.variations.map((variation) => {
-        return (
-          <option key={variation._id} value={variation._id}>
-            {variation.name} {variation.value.toString()}
-          </option>
-        );
-      })}
-      <option value={'rollout'} disabled>
-        Percentage rollout (not yet supported)
-      </option>
-    </Select>
   );
 };

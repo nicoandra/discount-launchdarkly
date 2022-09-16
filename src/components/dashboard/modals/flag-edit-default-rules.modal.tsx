@@ -11,10 +11,10 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Select,
   Tag,
   UnorderedList,
 } from '@chakra-ui/react';
+import { VariationSelect } from 'components/variation-select';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { OnUpdateFlagDefaultRulesInterface } from 'hooks/use-update-flag';
@@ -137,34 +137,5 @@ export const FlagEditDefaultRulesModal = ({
         </ModalFooter>
       </ModalContent>
     </Modal>
-  );
-};
-
-const VariationSelect = ({
-  flag,
-  variationId,
-  setVariationId,
-}: {
-  flag: FlagItem;
-  variationId: string | null;
-  setVariationId: (variationId: string) => void;
-}) => {
-  return (
-    <Select
-      variant="outline"
-      value={variationId ?? 'rollout'}
-      onChange={(e) => setVariationId(e.target.value as any)}
-    >
-      {flag.variations.map((variation) => {
-        return (
-          <option key={variation._id} value={variation._id}>
-            {variation.name} {variation.value.toString()}
-          </option>
-        );
-      })}
-      <option value={'rollout'} disabled>
-        Percentage rollout (not yet supported)
-      </option>
-    </Select>
   );
 };

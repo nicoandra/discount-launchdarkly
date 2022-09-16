@@ -199,7 +199,7 @@ export const DashboardFlagListItem = ({
         flag={flag}
         isOpen={isOpenUpdateFlagIndividualTargets}
         onCancel={onCloseUpdateFlagIndividualTargets}
-        onConfirm={onUpdateFlagIndividualTargets}
+        onConfirm={onConfirmUpdateFlagIndividualTargets}
         isUpdatingFlag={isUpdatingFlag}
       />
       <FlagDebugModal flag={flag} isOpen={isOpenFlagDebug} onCancel={onCloseFlagDebug} />
