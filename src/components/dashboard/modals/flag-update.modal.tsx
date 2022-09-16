@@ -101,7 +101,7 @@ export const FlagUpdateModal = ({
                 isChecked={usingEnvironmentId}
                 onChange={(e) => setUsingEnvironmentId(e.target.checked)}
               >
-                Web Browser (Terminal)
+                Web Browser
               </Checkbox>
             </Stack>
           </Box>

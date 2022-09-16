@@ -10,15 +10,23 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
-import { useListFlags } from 'hooks/use-list-flags';
+import { ListFlagsResponse } from 'hooks/use-list-flags';
 import lodash from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { DashboardFlagListItem } from './dashboard-flag-list-item.component';
 
 const PER_PAGE = 100;
 
-export const DashboardFlagsList = () => {
+interface DashboardFlagsListInterface {
+  loading: boolean;
+  flags: ListFlagsResponse | null;
+  refetchFlags: () => Promise<void>;
+}
+export const DashboardFlagsList = ({
+  loading,
+  flags,
+  refetchFlags,
+}: DashboardFlagsListInterface) => {
   const containerBg = useColorModeValue('white', 'gray.900');
   const containerBorderColor = useColorModeValue('gray.200', 'gray.700');
   const [filter, setFilter] = useState<string>('');
@@ -36,14 +44,7 @@ export const DashboardFlagsList = () => {
     debouncedFilterRef(filter);
   }, [filter]);
 
-  const { env, projectKey } = useLaunchDarklyConfig();
-  const {
-    loading: loadingFlags,
-    response: flags,
-    refetch: refetchFlags,
-  } = useListFlags({ env: env.key, projectKey });
-
-  // console.log({ projectKey, loadingFlags, flags });
+  // console.log({ projectKey, loading, flags });
 
   const filteredFlags = useMemo(() => {
     if (!flags?.items?.length) {
@@ -100,7 +101,7 @@ export const DashboardFlagsList = () => {
     return { first, last, totalFlags, isFirstPage, isLastPage };
   }, [page, paginatedFlags, filteredFlags]);
 
-  if (loadingFlags) {
+  if (loading) {
     return (
       <Center minH="250" justifyContent={'center'}>
         <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
