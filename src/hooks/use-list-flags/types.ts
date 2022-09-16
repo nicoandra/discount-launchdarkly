@@ -24,6 +24,10 @@ export interface FlagItem {
   tags: Array<string>; // ['ops', 'experiments'];
   maintainerId: string; // '548f6741c1efad40031b18ae';
   goalIds: Array<unknown>; // [];
+  clientSideAvailability: {
+    usingEnvironmentId: boolean;
+    usingMobileKey: boolean;
+  };
   environments: {
     [env: string]: {
       on: boolean; // true;

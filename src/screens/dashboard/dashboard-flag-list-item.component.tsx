@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
-import { useUpdateFlag } from 'hooks/use-update-flag';
+import { OnUpdateFlagGlobalsInterface, useUpdateFlag } from 'hooks/use-update-flag';
 import moment from 'moment';
 import { useCallback, useMemo } from 'react';
 import { FlagTargetingToggleModal } from './flag-targeting-toggle.modal';
@@ -43,7 +43,7 @@ export const DashboardFlagListItem = ({
     isOpen: isOpenUpdateFlag,
     onClose: onCloseUpdateFlag,
   } = useDisclosure();
-  const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagMetadata } = useUpdateFlag({
+  const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals } = useUpdateFlag({
     flagKey: flag.key,
   });
 
@@ -76,12 +76,9 @@ export const DashboardFlagListItem = ({
     [flag, isFlagTargetingOn],
   );
 
-  const onConfirmUpdateMetadata = useCallback(
-    async ({ name, description }: { name: string; description: string }) => {
-      await onUpdateFlagMetadata({
-        name,
-        description,
-      });
+  const onConfirmUpdateGlobals = useCallback(
+    async (props: OnUpdateFlagGlobalsInterface) => {
+      await onUpdateFlagGlobals(props);
       refetchFlags();
     },
     [flag, isFlagTargetingOn],
@@ -112,7 +109,7 @@ export const DashboardFlagListItem = ({
         flag={flag}
         isOpen={isOpenUpdateFlag}
         onCancel={onCloseUpdateFlag}
-        onConfirmUpdateMetadata={onConfirmUpdateMetadata}
+        onConfirmUpdateGlobals={onConfirmUpdateGlobals}
         isUpdatingFlag={isUpdatingFlag}
       />
       <Box flex={3}>

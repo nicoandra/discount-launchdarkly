@@ -10,12 +10,9 @@ interface OnToggleFlagTargetingInterface {
   comment: string;
 }
 
-interface OnUpdateFlagMetadataInterface {
+export interface OnUpdateFlagGlobalsInterface {
   name: string;
   description: string;
-}
-
-interface OnUpdateFlagClientSideAvailabilityInterface {
   usingMobileKey: boolean;
   usingEnvironmentId: boolean;
   comment: string;
@@ -28,10 +25,7 @@ interface OnArchiveFlagInterface {
 interface UseUpdateFlagAPI {
   isUpdatingFlag: boolean;
   onToggleFlagTargeting: (props: OnToggleFlagTargetingInterface) => Promise<FlagItem | null>;
-  onUpdateFlagMetadata: (props: OnUpdateFlagMetadataInterface) => Promise<FlagItem | null>;
-  onUpdateFlagClientSideAvailability: (
-    props: OnUpdateFlagClientSideAvailabilityInterface,
-  ) => Promise<FlagItem | null>;
+  onUpdateFlagGlobals: (props: OnUpdateFlagGlobalsInterface) => Promise<FlagItem | null>;
   // onArchiveFlag: (props: OnArchiveFlagInterface) => Promise<FlagItem | null>;
 }
 
@@ -61,8 +55,8 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
     [canUpdate, env],
   );
 
-  const onUpdateFlagMetadata = useCallback(
-    ({ name, description }: OnUpdateFlagMetadataInterface) => {
+  const onUpdateFlagGlobals = useCallback(
+    ({ name, description, usingMobileKey, usingEnvironmentId }: OnUpdateFlagGlobalsInterface) => {
       if (!canUpdate) {
         return Promise.resolve(null);
       }
@@ -74,29 +68,6 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
         operations: [
           { op: 'replace', path: '/name', value: name },
           { op: 'replace', path: '/description', value: description },
-        ],
-      });
-      setIsUpdatingFlag(false);
-      return response;
-    },
-    [canUpdate, env],
-  );
-
-  const onUpdateFlagClientSideAvailability = useCallback(
-    ({
-      usingMobileKey,
-      usingEnvironmentId,
-      comment,
-    }: OnUpdateFlagClientSideAvailabilityInterface) => {
-      if (!canUpdate) {
-        return Promise.resolve(null);
-      }
-      setIsUpdatingFlag(true);
-      const response = launchDarklyApi.patchFlag({
-        projectKey,
-        flagKey,
-        comment,
-        operations: [
           { op: 'replace', path: '/clientSideAvailability/usingMobileKey', value: usingMobileKey },
           {
             op: 'replace',
@@ -141,7 +112,6 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
   return {
     isUpdatingFlag,
     onToggleFlagTargeting,
-    onUpdateFlagMetadata,
-    onUpdateFlagClientSideAvailability,
+    onUpdateFlagGlobals,
   };
 };
