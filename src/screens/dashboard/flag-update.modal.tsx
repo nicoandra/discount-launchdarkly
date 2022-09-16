@@ -40,7 +40,6 @@ export const FlagUpdateModal = ({
   }: OnUpdateFlagGlobalsInterface) => void;
   onCancel: () => void;
 }) => {
-  console.log('FlagUpdate:', flag);
   const { envs } = useLaunchDarklyConfig();
   const [comment, setComment] = useState<string>('');
   const [name, setName] = useState<string>(flag.name);
@@ -56,6 +55,9 @@ export const FlagUpdateModal = ({
     const hasName = (name ?? '').trim().length > 0;
     return hasComment && hasName;
   }, [comment, name]);
+  const envNames = useMemo(() => {
+    return envs.items.map((env) => env.name).join(', ');
+  }, [envs]);
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="xl">
       <ModalOverlay />
@@ -63,10 +65,7 @@ export const FlagUpdateModal = ({
         <ModalHeader>Edit flag global settings</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <p>
-            These are settings that pertain to all flag environments (
-            {envs.items.map((env) => env.name).join(', ')}).
-          </p>
+          <p>These are settings that pertain to all flag environments ({envNames}).</p>
           <UnorderedList marginTop="3">
             <ListItem>
               Env: <b>All Environments</b>

@@ -19,6 +19,7 @@ import { FlagItem } from 'hooks/use-list-flags';
 import { OnUpdateFlagGlobalsInterface, useUpdateFlag } from 'hooks/use-update-flag';
 import moment from 'moment';
 import { useCallback, useMemo } from 'react';
+import { FlagDebugModal } from './flag-debug.modal';
 import { FlagTargetingToggleModal } from './flag-targeting-toggle.modal';
 import { FlagUpdateModal } from './flag-update.modal';
 
@@ -45,6 +46,12 @@ export const DashboardFlagListItem = ({
     isOpen: isOpenUpdateFlagGlobals,
     onClose: onCloseUpdateFlagGlobals,
   } = useDisclosure();
+  const {
+    onOpen: openFlagDebug,
+    isOpen: isOpenFlagDebug,
+    onClose: onCloseFlagDebug,
+  } = useDisclosure();
+
   const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals } = useUpdateFlag({
     flagKey: flag.key,
   });
@@ -114,6 +121,7 @@ export const DashboardFlagListItem = ({
         onConfirmUpdateGlobals={onConfirmUpdateGlobals}
         isUpdatingFlag={isUpdatingFlag}
       />
+      <FlagDebugModal flag={flag} isOpen={isOpenFlagDebug} onCancel={onCloseFlagDebug} />
       <Box flex={5}>
         <HStack>
           <Text fontSize="md" as="b">
@@ -169,6 +177,7 @@ export const DashboardFlagListItem = ({
             </MenuButton>
             <MenuList>
               <MenuItem onClick={openUpdateFlagGlobals}>Edit global settings</MenuItem>
+              <MenuItem onClick={openFlagDebug}>Flag debugger</MenuItem>
             </MenuList>
           </Menu>
         </Box>
