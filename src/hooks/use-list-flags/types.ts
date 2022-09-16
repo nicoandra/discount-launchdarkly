@@ -71,10 +71,13 @@ export interface FlagItem {
       //     ];
       //   },
       // ];
+      // fallthrough: {
+      //   rollout: {
+      //     variations: Array<{ variation: number; weight: number }>;
+      //   };
+      // };
       fallthrough: {
-        rollout: {
-          variations: Array<{ variation: number; weight: number }>;
-        };
+        variation: number;
       };
       // fallthrough: {
       //   rollout: {

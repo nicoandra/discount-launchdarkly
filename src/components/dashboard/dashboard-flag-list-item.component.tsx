@@ -21,7 +21,12 @@ import {
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
 import { OnUpdateFlagGlobalsInterface, useUpdateFlag } from 'hooks/use-update-flag';
-import { FlagDebugModal, FlagUpdateModal, FlagTargetingToggleModal } from './modals';
+import {
+  FlagDebugModal,
+  FlagUpdateModal,
+  FlagTargetingToggleModal,
+  FlagEditTargetingModal,
+} from './modals';
 
 interface DashboardFlagListItemInterface {
   flag: FlagItem;
@@ -51,6 +56,11 @@ export const DashboardFlagListItem = ({
     onOpen: openFlagDebug,
     isOpen: isOpenFlagDebug,
     onClose: onCloseFlagDebug,
+  } = useDisclosure();
+  const {
+    onOpen: openUpdateFlagTargeting,
+    isOpen: isOpenUpdateFlagTargeting,
+    onClose: onCloseUpdateFlagTargeting,
   } = useDisclosure();
 
   const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals, onSetFlagArchived } =
@@ -145,6 +155,13 @@ export const DashboardFlagListItem = ({
         onConfirmUpdateGlobals={onConfirmUpdateGlobals}
         isUpdatingFlag={isUpdatingFlag}
       />
+      <FlagEditTargetingModal
+        flag={flag}
+        isOpen={isOpenUpdateFlagTargeting}
+        onCancel={onCloseUpdateFlagTargeting}
+        onConfirm={() => {}}
+        isUpdatingFlag={isUpdatingFlag}
+      />
       <FlagDebugModal flag={flag} isOpen={isOpenFlagDebug} onCancel={onCloseFlagDebug} />
       <Box flex={5}>
         <HStack>
@@ -200,7 +217,9 @@ export const DashboardFlagListItem = ({
               Actions
             </MenuButton>
             <MenuList>
-              <MenuItem onClick={openUpdateFlagGlobals}>Edit global settings</MenuItem>
+              <MenuItem onClick={openUpdateFlagGlobals}>Edit settings</MenuItem>
+              <MenuItem onClick={openUpdateFlagTargeting}>Edit targeting rules</MenuItem>
+              <MenuDivider />
               <MenuItem onClick={openFlagDebug}>Flag debugger</MenuItem>
               <MenuDivider />
               {flag.archived ? (
