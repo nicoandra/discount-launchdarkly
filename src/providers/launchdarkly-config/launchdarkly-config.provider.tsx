@@ -58,7 +58,12 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
   }, [apiKey, accessTokens]);
 
   const loading =
-    loadingEnvironments || loadingAccessTokens || !accessToken || !env || !environments;
+    loadingProjects ||
+    loadingEnvironments ||
+    loadingAccessTokens ||
+    !accessToken ||
+    !env ||
+    !environments;
 
   return (
     <LaunchDarklyConfigContext.Provider
