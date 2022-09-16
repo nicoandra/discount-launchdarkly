@@ -38,7 +38,7 @@ export interface FlagItem {
       sel: string; // '45501b9314dc4641841af774cb038b96';
       lastModified: number; // 1469326565348;
       version: number; // 61;
-      targets: Array<{ values: Array<string>; variations: number }>;
+      targets: Array<{ values: Array<string>; variation: number }>;
       // targets: [
       //   {
       //     values: ['1461797806427-7-115540266'];

@@ -23,6 +23,7 @@ import { FlagItem } from 'hooks/use-list-flags';
 import {
   OnUpdateFlagDefaultRulesInterface,
   OnUpdateFlagGlobalsInterface,
+  OnUpdateFlagIndividualTargetsInterface,
   useUpdateFlag,
 } from 'hooks/use-update-flag';
 import {
@@ -30,6 +31,7 @@ import {
   FlagUpdateModal,
   FlagTargetingToggleModal,
   FlagEditDefaultRulesModal,
+  FlagEditIndividualTargetsModal,
 } from './modals';
 
 interface DashboardFlagListItemInterface {
@@ -66,6 +68,11 @@ export const DashboardFlagListItem = ({
     isOpen: isOpenUpdateFlagDefaults,
     onClose: onCloseUpdateFlagDefaults,
   } = useDisclosure();
+  const {
+    onOpen: openUpdateFlagIndividualTargets,
+    isOpen: isOpenUpdateFlagIndividualTargets,
+    onClose: onCloseUpdateFlagIndividualTargets,
+  } = useDisclosure();
 
   const {
     isUpdatingFlag,
@@ -73,6 +80,7 @@ export const DashboardFlagListItem = ({
     onUpdateFlagGlobals,
     onSetFlagArchived,
     onUpdateFlagDefaultRules,
+    onUpdateFlagIndividualTargets,
   } = useUpdateFlag({
     flagKey: flag.key,
   });
@@ -117,6 +125,14 @@ export const DashboardFlagListItem = ({
   const onConfirmUpdateFlagDefaultRules = useCallback(
     async (props: OnUpdateFlagDefaultRulesInterface) => {
       await onUpdateFlagDefaultRules(props);
+      refetchFlags();
+    },
+    [flag],
+  );
+
+  const onConfirmUpdateFlagIndividualTargets = useCallback(
+    async (props: OnUpdateFlagIndividualTargetsInterface) => {
+      await onUpdateFlagIndividualTargets(props);
       refetchFlags();
     },
     [flag],
@@ -179,6 +195,13 @@ export const DashboardFlagListItem = ({
         onConfirm={onConfirmUpdateFlagDefaultRules}
         isUpdatingFlag={isUpdatingFlag}
       />
+      <FlagEditIndividualTargetsModal
+        flag={flag}
+        isOpen={isOpenUpdateFlagIndividualTargets}
+        onCancel={onCloseUpdateFlagIndividualTargets}
+        onConfirm={onUpdateFlagIndividualTargets}
+        isUpdatingFlag={isUpdatingFlag}
+      />
       <FlagDebugModal flag={flag} isOpen={isOpenFlagDebug} onCancel={onCloseFlagDebug} />
       <Box flex={5}>
         <HStack>
@@ -235,6 +258,7 @@ export const DashboardFlagListItem = ({
             </MenuButton>
             <MenuList>
               <MenuItem onClick={openUpdateFlagGlobals}>Edit settings</MenuItem>
+              <MenuItem onClick={openUpdateFlagIndividualTargets}>Edit individual targets</MenuItem>
               <MenuItem onClick={openUpdateFlagDefaults}>Edit default rules</MenuItem>
               <MenuDivider />
               <MenuItem onClick={openFlagDebug}>Flag debugger</MenuItem>

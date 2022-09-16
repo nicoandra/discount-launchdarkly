@@ -29,12 +29,21 @@ export interface OnUpdateFlagDefaultRulesInterface {
   comment: string;
 }
 
+export interface OnUpdateFlagIndividualTargetsInterface {
+  addUserTargets: Array<{ variationId: string; values: Array<string> }>;
+  removeUserTargets: Array<{ variationId: string; values: Array<string> }>;
+  comment: string;
+}
+
 interface UseUpdateFlagAPI {
   isUpdatingFlag: boolean;
   onToggleFlagTargeting: (props: OnToggleFlagTargetingInterface) => Promise<FlagItem | null>;
   onUpdateFlagGlobals: (props: OnUpdateFlagGlobalsInterface) => Promise<FlagItem | null>;
   onSetFlagArchived: (props: OnSetFlagArchivedInterface) => Promise<FlagItem | null>;
   onUpdateFlagDefaultRules: (props: OnUpdateFlagDefaultRulesInterface) => Promise<FlagItem | null>;
+  onUpdateFlagIndividualTargets: (
+    props: OnUpdateFlagIndividualTargetsInterface,
+  ) => Promise<FlagItem | null>;
 }
 
 export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAPI => {
@@ -152,11 +161,58 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
     [canUpdate, env],
   );
 
+  // {"comment":"","environmentKey":"development","instructions":[{"kind":"addUserTargets","values":["user-gee"],"variationId":"57a40920-e071-49db-88d1-9b7c73190c0d"},{"kind":"addUserTargets","values":["user-gee2"],"variationId":"7d80718b-1252-4fdb-bd54-d2dec134493c"}]}
+  // {"comment":"","environmentKey":"development","instructions":[{"kind":"removeUserTargets","values":["user-pedro"],"variationId":"57a40920-e071-49db-88d1-9b7c73190c0d"}]}
+
+  const onUpdateFlagIndividualTargets = useCallback(
+    async ({
+      addUserTargets,
+      removeUserTargets,
+      comment,
+    }: OnUpdateFlagIndividualTargetsInterface) => {
+      if (!canUpdate) {
+        return Promise.resolve(null);
+      }
+      const instructions: Array<Record<string, any>> = [];
+      addUserTargets.forEach((addUser) => {
+        instructions.push({
+          kind: 'addUserTargets',
+          values: addUser.values,
+          variationId: addUser.variationId,
+        });
+      });
+      removeUserTargets.forEach((removeUser) => {
+        instructions.push({
+          kind: 'removeUserTargets',
+          values: removeUser.values,
+          variationId: removeUser.variationId,
+        });
+      });
+      if (!instructions.length) {
+        return Promise.resolve(null);
+      }
+
+      setIsUpdatingFlag(true);
+      const response = await launchDarklyApi.semanticPatchFlag({
+        projectKey,
+        flagKey,
+        environmentKey: env.key,
+        ignoreConflicts: true,
+        instructions,
+        comment,
+      });
+      setIsUpdatingFlag(false);
+      return response;
+    },
+    [canUpdate, env],
+  );
+
   return {
     isUpdatingFlag,
     onToggleFlagTargeting,
     onUpdateFlagGlobals,
     onSetFlagArchived,
     onUpdateFlagDefaultRules,
+    onUpdateFlagIndividualTargets,
   };
 };

@@ -1,3 +1,5 @@
+// {"comment":"testing","environmentKey":"development","instructions":[{"kind":"addUserTargets","values":["user-123"],"variationId":"b17545b3-4478-4acb-a9c0-9b6abd0e5ed0"}]}
+
 import {
   Box,
   Button,
@@ -17,10 +19,10 @@ import {
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
-import { OnUpdateFlagDefaultRulesInterface } from 'hooks/use-update-flag';
+import { OnUpdateFlagIndividualTargetsInterface } from 'hooks/use-update-flag';
 import { useMemo, useState } from 'react';
 
-export const FlagEditDefaultRulesModal = ({
+export const FlagEditIndividualTargetsModal = ({
   flag,
   isOpen,
   onCancel,
@@ -30,7 +32,7 @@ export const FlagEditDefaultRulesModal = ({
   flag: FlagItem;
   isUpdatingFlag: boolean;
   isOpen: boolean;
-  onConfirm: (props: OnUpdateFlagDefaultRulesInterface) => void;
+  onConfirm: (props: OnUpdateFlagIndividualTargetsInterface) => void;
   onCancel: () => void;
 }) => {
   const { env } = useLaunchDarklyConfig();
@@ -42,33 +44,21 @@ export const FlagEditDefaultRulesModal = ({
 
   const flagCurrentEnv = flag.environments[env.key];
 
-  const existingDefaultRules = useMemo(() => {
-    // Normally just 0, 1 but could be 0, 1, 2 ,.. or just one number.
-    const variationKeys: Array<string> = Object.keys(flagCurrentEnv._summary.variations);
-    const targetingOnIndex = Number(
-      variationKeys.find((key) => flagCurrentEnv._summary.variations[key].isFallthrough),
-    );
-    const targetingOffIndex = Number(
-      variationKeys.find((key) => flagCurrentEnv._summary.variations[key].isOff),
-    );
-    // TODO: handle rollout
-    const targetingOn = targetingOnIndex != null ? flag.variations[targetingOnIndex] : null;
-    const targetingOff = flag.variations[targetingOffIndex];
-    return { targetingOn, targetingOff };
+  const existingTargets = useMemo(() => {
+    return flag.variations.map((variation, variationIndex) => {
+      const targets = flagCurrentEnv.targets.find((target) => target.variation === variationIndex);
+      return {
+        variation,
+        targets: targets?.values ?? [],
+      };
+    });
   }, [flag, flagCurrentEnv]);
-
-  const [fallthroughVariationId, setFallthroughVariationId] = useState<string | null>(
-    existingDefaultRules.targetingOn?._id ?? null,
-  );
-  const [offVariationId, setOffVariationId] = useState<string>(
-    existingDefaultRules.targetingOff._id,
-  );
 
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Flag default targeting rules</ModalHeader>
+        <ModalHeader>Flag individual targeting rules</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <UnorderedList marginTop="3">
@@ -88,24 +78,8 @@ export const FlagEditDefaultRulesModal = ({
             </ListItem>
           </UnorderedList>
           <Box marginTop="5">
-            <FormLabel>
-              If flag targeting is <b>ON</b>, serve this default (fallthrough) variation:
-            </FormLabel>
-            <VariationSelect
-              flag={flag}
-              variationId={fallthroughVariationId}
-              setVariationId={setFallthroughVariationId}
-            />
-          </Box>
-          <Box marginTop="3">
-            <FormLabel>
-              If flag targeting is <b>OFF</b>, serve this variation:
-            </FormLabel>
-            <VariationSelect
-              flag={flag}
-              variationId={offVariationId}
-              setVariationId={setOffVariationId}
-            />
+            <FormLabel>Existing targets:</FormLabel>
+            <pre>{JSON.stringify(existingTargets, null, 2)}</pre>
           </Box>
           <Box marginTop="3">
             <FormLabel>Comment</FormLabel>
@@ -124,12 +98,11 @@ export const FlagEditDefaultRulesModal = ({
             colorScheme="gray"
             disabled={!canConfirm || isUpdatingFlag}
             isLoading={isUpdatingFlag}
-            onClick={() =>
-              onConfirm({
-                fallthroughVariationId,
-                offVariationId,
-                comment,
-              })
+            onClick={
+              () => {}
+              // onConfirm({
+              //   comment,
+              // })
             }
           >
             Save changes
