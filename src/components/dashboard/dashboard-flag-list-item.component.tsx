@@ -100,8 +100,20 @@ export const DashboardFlagListItem = ({
       return;
     }
 
-    if (window.confirm('Are you sure you want to archive this flag and deactive it?')) {
+    if (window.confirm('Are you sure you want to *archive* this flag and deactive it?')) {
       await onSetFlagArchived({ value: true, comment: 'Archiving flag' });
+      refetchFlags();
+    }
+  }, []);
+
+  const onUnarchived = useCallback(async () => {
+    if (!flag.archived) {
+      return;
+    }
+
+    if (window.confirm('Are you sure you want to *unarchive* this flag and reactive it?')) {
+      await onSetFlagArchived({ value: false, comment: 'Unarchving flag' });
+      refetchFlags();
     }
   }, []);
 
@@ -191,9 +203,15 @@ export const DashboardFlagListItem = ({
               <MenuItem onClick={openUpdateFlagGlobals}>Edit global settings</MenuItem>
               <MenuItem onClick={openFlagDebug}>Flag debugger</MenuItem>
               <MenuDivider />
-              <MenuItem color="red" onClick={onArchived}>
-                Archive flag
-              </MenuItem>
+              {flag.archived ? (
+                <MenuItem color="red" onClick={onUnarchived}>
+                  Unarchive flag
+                </MenuItem>
+              ) : (
+                <MenuItem color="red" onClick={onArchived}>
+                  Archive flag
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Box>

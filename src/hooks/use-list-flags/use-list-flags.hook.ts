@@ -10,10 +10,12 @@ export interface ListFlagsResponse {
 interface UseFlagsInterface {
   env: string | null;
   projectKey?: LaunchDarklyProject;
+  archived?: boolean;
 }
 export const useListFlags = ({
   env,
   projectKey = LaunchDarklyProject.DEFAULT,
+  archived,
 }: UseFlagsInterface): UseLdGetAPI<ListFlagsResponse> => {
   // https://apidocs.launchdarkly.com/tag/Feature-flags#operation/getFeatureFlags
   return useLdGet<ListFlagsResponse>(
@@ -24,8 +26,9 @@ export const useListFlags = ({
       query: {
         env: env ?? '',
         summary: '1',
+        archived: (archived ?? false).toString(),
       },
     },
-    [projectKey, env],
+    [projectKey, env, archived],
   );
 };

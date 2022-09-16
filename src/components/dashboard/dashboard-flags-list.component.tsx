@@ -7,6 +7,7 @@ import {
   Input,
   InputGroup,
   Spinner,
+  Switch,
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
@@ -112,7 +113,7 @@ export const DashboardFlagsList = ({
   return (
     <Box marginTop="4">
       <HStack flex={1} justifyContent="space-between">
-        <Box minW="400" maxW="400">
+        <Box minW="400" maxW="400" justifyContent={'center'} flex="1">
           <InputGroup>
             <Input
               autoFocus

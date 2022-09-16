@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
-import { Box, Button, useDisclosure } from '@chakra-ui/react';
+import { Button, useDisclosure } from '@chakra-ui/react';
 import { CreateFlagParams, useCreateFlag } from 'hooks/use-create-flag';
 import { FlagCreateModal } from './modals';
 
@@ -27,16 +27,14 @@ export const DashboardCreateFlagMenu = ({ refetchFlags }: DashboardCreateFlagInt
         isCreatingFlag={isCreatingFlag}
         onConfirmCreate={onConfirm}
       />
-      <Box style={{ float: 'right' }}>
-        <Button
-          colorScheme="blue"
-          rightIcon={<PlusSquareIcon />}
-          alignSelf="flex-end"
-          onClick={onOpen}
-        >
-          Create Flag
-        </Button>
-      </Box>
+      <Button
+        colorScheme="blue"
+        rightIcon={<PlusSquareIcon />}
+        alignSelf="flex-end"
+        onClick={onOpen}
+      >
+        Create Flag
+      </Button>
     </>
   );
 };
