@@ -1,4 +1,7 @@
+import { CopyIcon } from '@chakra-ui/icons';
 import {
+  Button,
+  Code,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -7,7 +10,7 @@ import {
   ModalOverlay,
 } from '@chakra-ui/react';
 import { FlagItem } from 'hooks/use-list-flags';
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 
 export const FlagDebugModal = ({
   flag,
@@ -21,14 +24,22 @@ export const FlagDebugModal = ({
   const prettyJSON = useMemo(() => {
     return JSON.stringify(flag, null, 2);
   }, [flag]);
+  const onClickCopy = useCallback(() => {
+    navigator.clipboard.writeText(prettyJSON);
+  }, [prettyJSON]);
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="full">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Debug Flag (raw JSON)</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <pre>{prettyJSON}</pre>
+          <ModalHeader>Debug Flag JSON</ModalHeader>
+          <Button rightIcon={<CopyIcon />} onClick={onClickCopy}>
+            Copy JSON to Clipboard
+          </Button>
+          <Code marginTop="4" whiteSpace={'pre'} display="block">
+            {prettyJSON}
+          </Code>
         </ModalBody>
       </ModalContent>
     </Modal>
