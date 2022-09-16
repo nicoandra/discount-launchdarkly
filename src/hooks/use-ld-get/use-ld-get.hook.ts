@@ -1,5 +1,4 @@
 import { useLaunchDarklyApi } from 'hooks/use-launchdarkly-api';
-import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { useCallback, useEffect, useState } from 'react';
 import { LaunchDarklyApiFetchProps } from 'utils/launchdarkly-api';
 
