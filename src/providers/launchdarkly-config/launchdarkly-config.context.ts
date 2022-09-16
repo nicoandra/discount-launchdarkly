@@ -1,6 +1,5 @@
 import { EnvironmentItem, ListEnvironmentsResponse } from 'hooks/use-list-environments';
 import { createContext } from 'react';
-import { DEFAULT_PROJECT_KEY } from './constants';
 import { AccessTokenItem } from 'hooks/use-list-access-tokens';
 import { ProjectItem } from 'hooks/use-list-projects';
 
@@ -18,7 +17,7 @@ export interface LaunchDarklyConfigContextAPI {
 export const LaunchDarklyConfigContext = createContext<LaunchDarklyConfigContextAPI>({
   loading: true,
   projects: [],
-  projectKey: DEFAULT_PROJECT_KEY,
+  projectKey: '',
   setProjectKey: () => {},
   env: {} as EnvironmentItem,
   envs: {} as ListEnvironmentsResponse,

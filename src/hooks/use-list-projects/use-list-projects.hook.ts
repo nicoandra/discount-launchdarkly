@@ -1,4 +1,5 @@
 import { useLdGet, UseLdGetAPI } from 'hooks/use-ld-get';
+import { ListEnvironmentsResponse } from 'hooks/use-list-environments';
 
 // https://apidocs.launchdarkly.com/tag/Projects#operation/getProjects
 
@@ -9,7 +10,7 @@ export interface ProjectItem {
   defaultClientSideAvailability: unknown; // {},
   name: string; // "My Project",
   tags: Array<unknown>; // [],
-  environments: Array<unknown>;
+  environments: ListEnvironmentsResponse;
 }
 export interface ListProjectsResponse {
   totalCount: number;
@@ -20,6 +21,9 @@ export const useListProjects = (): UseLdGetAPI<ListProjectsResponse> => {
   return useLdGet<ListProjectsResponse>(
     {
       path: `/api/v2/projects`,
+      query: {
+        expand: 'environments',
+      },
       method: 'GET',
     },
     [],

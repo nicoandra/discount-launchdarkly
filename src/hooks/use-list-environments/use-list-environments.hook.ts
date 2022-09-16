@@ -30,7 +30,7 @@ export interface ListEnvironmentsResponse {
 }
 
 interface UseListEnvironmentsInterface {
-  projectKey: string;
+  projectKey?: string;
 }
 export const useListEnvironments = ({
   projectKey,
@@ -38,6 +38,7 @@ export const useListEnvironments = ({
   // https://apidocs.launchdarkly.com/tag/Environments#operation/getEnvironmentsByProject
   return useLdGet<ListEnvironmentsResponse>(
     {
+      skip: !projectKey,
       path: `/api/v2/projects/${projectKey}/environments`,
       method: 'GET',
       query: {
