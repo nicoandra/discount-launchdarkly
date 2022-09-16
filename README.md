@@ -4,11 +4,13 @@ a cobbled together alternative UI to launchdarkly, allowing read/write access vi
 
 ### setup
 
-clone it and install deps:
+make sure you have a recent version of node.js installed
+
+clone this repo and install deps:
 
 ```
 git clone https://github.com/6/discount-launchdarkly.git
-cd discount-launchdarly
+cd discount-launchdarkly
 yarn
 ```
 
