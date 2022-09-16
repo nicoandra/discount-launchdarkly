@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import { theme } from './theme';
-import { DashboardScreen } from 'screens/dashboard';
+import { DashboardScreen } from 'components/dashboard';
 import { LaunchDarklyApiProvider } from 'providers/launchdarkly-api';
 import { LaunchDarklyConfigProvider } from 'providers/launchdarkly-config';
 
