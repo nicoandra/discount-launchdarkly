@@ -103,7 +103,7 @@ export const FlagCreateModal = ({
                 isChecked={usingEnvironmentId}
                 onChange={(e) => setUsingEnvironmentId(e.target.checked)}
               >
-                Web Browser (Terminal)
+                Web Browser
               </Checkbox>
             </Stack>
           </Box>
