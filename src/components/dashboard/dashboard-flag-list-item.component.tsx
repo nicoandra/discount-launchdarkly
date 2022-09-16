@@ -20,12 +20,16 @@ import {
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
-import { OnUpdateFlagGlobalsInterface, useUpdateFlag } from 'hooks/use-update-flag';
+import {
+  OnUpdateFlagDefaultRulesInterface,
+  OnUpdateFlagGlobalsInterface,
+  useUpdateFlag,
+} from 'hooks/use-update-flag';
 import {
   FlagDebugModal,
   FlagUpdateModal,
   FlagTargetingToggleModal,
-  FlagEditTargetingModal,
+  FlagEditDefaultRulesModal,
 } from './modals';
 
 interface DashboardFlagListItemInterface {
@@ -58,15 +62,20 @@ export const DashboardFlagListItem = ({
     onClose: onCloseFlagDebug,
   } = useDisclosure();
   const {
-    onOpen: openUpdateFlagTargeting,
-    isOpen: isOpenUpdateFlagTargeting,
-    onClose: onCloseUpdateFlagTargeting,
+    onOpen: openUpdateFlagDefaults,
+    isOpen: isOpenUpdateFlagDefaults,
+    onClose: onCloseUpdateFlagDefaults,
   } = useDisclosure();
 
-  const { isUpdatingFlag, onToggleFlagTargeting, onUpdateFlagGlobals, onSetFlagArchived } =
-    useUpdateFlag({
-      flagKey: flag.key,
-    });
+  const {
+    isUpdatingFlag,
+    onToggleFlagTargeting,
+    onUpdateFlagGlobals,
+    onSetFlagArchived,
+    onUpdateFlagDefaultRules,
+  } = useUpdateFlag({
+    flagKey: flag.key,
+  });
 
   const { creationDateFormatted, creationDateRelative } = useMemo(() => {
     const creationDateMoment = moment(flag.creationDate);
@@ -102,7 +111,15 @@ export const DashboardFlagListItem = ({
       await onUpdateFlagGlobals(props);
       refetchFlags();
     },
-    [flag, isFlagTargetingOn],
+    [flag],
+  );
+
+  const onConfirmUpdateFlagDefaultRules = useCallback(
+    async (props: OnUpdateFlagDefaultRulesInterface) => {
+      await onUpdateFlagDefaultRules(props);
+      refetchFlags();
+    },
+    [flag],
   );
 
   const onArchived = useCallback(async () => {
@@ -155,11 +172,11 @@ export const DashboardFlagListItem = ({
         onConfirmUpdateGlobals={onConfirmUpdateGlobals}
         isUpdatingFlag={isUpdatingFlag}
       />
-      <FlagEditTargetingModal
+      <FlagEditDefaultRulesModal
         flag={flag}
-        isOpen={isOpenUpdateFlagTargeting}
-        onCancel={onCloseUpdateFlagTargeting}
-        onConfirm={() => {}}
+        isOpen={isOpenUpdateFlagDefaults}
+        onCancel={onCloseUpdateFlagDefaults}
+        onConfirm={onConfirmUpdateFlagDefaultRules}
         isUpdatingFlag={isUpdatingFlag}
       />
       <FlagDebugModal flag={flag} isOpen={isOpenFlagDebug} onCancel={onCloseFlagDebug} />
@@ -218,7 +235,7 @@ export const DashboardFlagListItem = ({
             </MenuButton>
             <MenuList>
               <MenuItem onClick={openUpdateFlagGlobals}>Edit settings</MenuItem>
-              <MenuItem onClick={openUpdateFlagTargeting}>Edit targeting rules</MenuItem>
+              <MenuItem onClick={openUpdateFlagDefaults}>Edit default rules</MenuItem>
               <MenuDivider />
               <MenuItem onClick={openFlagDebug}>Flag debugger</MenuItem>
               <MenuDivider />

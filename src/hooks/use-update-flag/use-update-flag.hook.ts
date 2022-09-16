@@ -23,11 +23,18 @@ interface OnSetFlagArchivedInterface {
   comment: string;
 }
 
+export interface OnUpdateFlagDefaultRulesInterface {
+  fallthroughVariationId: string | null;
+  offVariationId: string;
+  comment: string;
+}
+
 interface UseUpdateFlagAPI {
   isUpdatingFlag: boolean;
   onToggleFlagTargeting: (props: OnToggleFlagTargetingInterface) => Promise<FlagItem | null>;
   onUpdateFlagGlobals: (props: OnUpdateFlagGlobalsInterface) => Promise<FlagItem | null>;
   onSetFlagArchived: (props: OnSetFlagArchivedInterface) => Promise<FlagItem | null>;
+  onUpdateFlagDefaultRules: (props: OnUpdateFlagDefaultRulesInterface) => Promise<FlagItem | null>;
 }
 
 export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAPI => {
@@ -39,12 +46,12 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
   }, [env, projectKey]);
 
   const onToggleFlagTargeting = useCallback(
-    ({ instruction, comment }: OnToggleFlagTargetingInterface) => {
+    async ({ instruction, comment }: OnToggleFlagTargetingInterface) => {
       if (!canUpdate) {
         return Promise.resolve(null);
       }
       setIsUpdatingFlag(true);
-      const response = launchDarklyApi.semanticPatchFlag({
+      const response = await launchDarklyApi.semanticPatchFlag({
         projectKey,
         flagKey,
         environmentKey: env.key,
@@ -58,12 +65,17 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
   );
 
   const onUpdateFlagGlobals = useCallback(
-    ({ name, description, usingMobileKey, usingEnvironmentId }: OnUpdateFlagGlobalsInterface) => {
+    async ({
+      name,
+      description,
+      usingMobileKey,
+      usingEnvironmentId,
+    }: OnUpdateFlagGlobalsInterface) => {
       if (!canUpdate) {
         return Promise.resolve(null);
       }
       setIsUpdatingFlag(true);
-      const response = launchDarklyApi.patchFlag({
+      const response = await launchDarklyApi.patchFlag({
         projectKey,
         flagKey,
         comment: 'Updating name / description',
@@ -85,16 +97,54 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
   );
 
   const onSetFlagArchived = useCallback(
-    ({ value, comment }: OnSetFlagArchivedInterface) => {
+    async ({ value, comment }: OnSetFlagArchivedInterface) => {
       if (!canUpdate) {
         return Promise.resolve(null);
       }
       setIsUpdatingFlag(true);
-      const response = launchDarklyApi.patchFlag({
+      const response = await launchDarklyApi.patchFlag({
         projectKey,
         flagKey,
         comment,
         operations: [{ op: 'replace', path: '/archived', value }],
+      });
+      setIsUpdatingFlag(false);
+      return response;
+    },
+    [canUpdate, env],
+  );
+
+  const onUpdateFlagDefaultRules = useCallback(
+    async ({
+      fallthroughVariationId,
+      offVariationId,
+      comment,
+    }: OnUpdateFlagDefaultRulesInterface) => {
+      if (!canUpdate) {
+        return Promise.resolve(null);
+      }
+      setIsUpdatingFlag(true);
+      const instructions = [
+        {
+          kind: 'updateOffVariation',
+          variationId: offVariationId,
+        },
+      ];
+      // Some existing flags use rollouts, which are different type of update:
+      if (fallthroughVariationId) {
+        instructions.push({
+          kind: 'updateFallthroughVariationOrRollout',
+          variationId: fallthroughVariationId,
+        });
+      }
+
+      const response = await launchDarklyApi.semanticPatchFlag({
+        projectKey,
+        flagKey,
+        environmentKey: env.key,
+        ignoreConflicts: true,
+        instructions,
+        comment,
       });
       setIsUpdatingFlag(false);
       return response;
@@ -107,5 +157,6 @@ export const useUpdateFlag = ({ flagKey }: { flagKey: string }): UseUpdateFlagAP
     onToggleFlagTargeting,
     onUpdateFlagGlobals,
     onSetFlagArchived,
+    onUpdateFlagDefaultRules,
   };
 };

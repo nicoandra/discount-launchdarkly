@@ -89,15 +89,22 @@ export class LaunchDarklyApi {
     environmentKey,
     instructions,
     comment,
+    ignoreConflicts,
   }: {
     projectKey: LaunchDarklyProject;
     flagKey: string;
     environmentKey: string;
     instructions: Array<Record<string, any>>;
     comment?: string;
+    ignoreConflicts?: boolean;
   }): Promise<FlagItem | null> {
+    let query = {};
+    if (ignoreConflicts) {
+      query = { ignoreConflicts: true };
+    }
     return this.fetch<FlagItem | null>({
       path: `/api/v2/flags/${projectKey}/${flagKey}`,
+      query,
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json; domain-model=launchdarkly.semanticpatch',

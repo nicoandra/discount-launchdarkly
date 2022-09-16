@@ -5,9 +5,10 @@ export interface FlagItem {
   key: string; // 'alternate.page';
   creationDate: number; // 1418684722483;
   includeInSnippet: boolean; // true;
-  variations: Array<{ value: boolean; name: string }>;
+  variations: Array<{ _id: string; value: boolean; name?: string }>;
   // variations: [
   //   {
+  //     "_id": "18e82c32-7a27-4ad0-a3b1-d02918ed19e5",
   //     value: true;
   //     name: 'true';
   //   },

@@ -3,7 +3,6 @@
 import {
   Box,
   Button,
-  Checkbox,
   FormLabel,
   Input,
   ListItem,
@@ -14,16 +13,17 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Stack,
+  Select,
   Tag,
   UnorderedList,
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 import { FlagItem } from 'hooks/use-list-flags';
-import { OnUpdateFlagGlobalsInterface } from 'hooks/use-update-flag';
+import { OnUpdateFlagDefaultRulesInterface } from 'hooks/use-update-flag';
 import { useMemo, useState } from 'react';
+import lodash from 'lodash';
 
-export const FlagEditTargetingModal = ({
+export const FlagEditDefaultRulesModal = ({
   flag,
   isOpen,
   onCancel,
@@ -33,7 +33,7 @@ export const FlagEditTargetingModal = ({
   flag: FlagItem;
   isUpdatingFlag: boolean;
   isOpen: boolean;
-  onConfirm: (props: OnUpdateFlagGlobalsInterface) => void;
+  onConfirm: (props: OnUpdateFlagDefaultRulesInterface) => void;
   onCancel: () => void;
 }) => {
   const { env } = useLaunchDarklyConfig();
@@ -45,7 +45,7 @@ export const FlagEditTargetingModal = ({
 
   const flagCurrentEnv = flag.environments[env.key];
 
-  const defaultRules = useMemo(() => {
+  const existingDefaultRules = useMemo(() => {
     // Normally just 0, 1 but could be 0, 1, 2 ,.. or just one number.
     const variationKeys: Array<string> = Object.keys(flagCurrentEnv._summary.variations);
     const targetingOnIndex = Number(
@@ -54,16 +54,24 @@ export const FlagEditTargetingModal = ({
     const targetingOffIndex = Number(
       variationKeys.find((key) => flagCurrentEnv._summary.variations[key].isOff),
     );
-    const targetingOn = flag.variations[targetingOnIndex];
+    // TODO: handle rollout
+    const targetingOn = targetingOnIndex != null ? flag.variations[targetingOnIndex] : null;
     const targetingOff = flag.variations[targetingOffIndex];
     return { targetingOn, targetingOff };
   }, [flag, flagCurrentEnv]);
+
+  const [fallthroughVariationId, setFallthroughVariationId] = useState<string | null>(
+    existingDefaultRules.targetingOn?._id ?? null,
+  );
+  const [offVariationId, setOffVariationId] = useState<string>(
+    existingDefaultRules.targetingOff._id,
+  );
 
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="xl">
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Edit flag global settings</ModalHeader>
+        <ModalHeader>Flag default targeting rules</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <UnorderedList marginTop="3">
@@ -82,32 +90,25 @@ export const FlagEditTargetingModal = ({
               Flag: <Tag size="sm">{flag.key}</Tag>
             </ListItem>
           </UnorderedList>
-          <Box marginTop="3">
+          <Box marginTop="5">
             <FormLabel>
-              <b>Prerequisites</b>
+              If flag targeting is <b>ON</b>, serve this default (fallthrough) variation:
             </FormLabel>
-            <pre>{JSON.stringify(flagCurrentEnv?.prerequisites, null, 2)}</pre>
-            <FormLabel>
-              <b>Individual targets</b>
-            </FormLabel>
-            <pre>{JSON.stringify(flagCurrentEnv?.targets, null, 2)}</pre>
-            <FormLabel>
-              <b>Rules</b>
-            </FormLabel>
-            <pre>{JSON.stringify(flagCurrentEnv?.rules, null, 2)}</pre>
+            <VariationSelect
+              flag={flag}
+              variationId={fallthroughVariationId}
+              setVariationId={setFallthroughVariationId}
+            />
           </Box>
           <Box marginTop="3">
             <FormLabel>
-              <b>Default rule</b>
+              If flag targeting is <b>OFF</b>, serve this variation:
             </FormLabel>
-            <UnorderedList>
-              <ListItem>
-                If targeting is <b>ON</b>, serve {JSON.stringify(defaultRules.targetingOn)}
-              </ListItem>
-              <ListItem>
-                If targeting is <b>OFF</b>, serve {JSON.stringify(defaultRules.targetingOff)}
-              </ListItem>
-            </UnorderedList>
+            <VariationSelect
+              flag={flag}
+              variationId={offVariationId}
+              setVariationId={setOffVariationId}
+            />
           </Box>
           <Box marginTop="3">
             <FormLabel>Comment</FormLabel>
@@ -126,12 +127,47 @@ export const FlagEditTargetingModal = ({
             colorScheme="gray"
             disabled={!canConfirm || isUpdatingFlag}
             isLoading={isUpdatingFlag}
-            onClick={() => {}}
+            onClick={() =>
+              onConfirm({
+                fallthroughVariationId,
+                offVariationId,
+                comment,
+              })
+            }
           >
             Save changes
           </Button>
         </ModalFooter>
       </ModalContent>
     </Modal>
+  );
+};
+
+const VariationSelect = ({
+  flag,
+  variationId,
+  setVariationId,
+}: {
+  flag: FlagItem;
+  variationId: string | null;
+  setVariationId: (variationId: string) => void;
+}) => {
+  return (
+    <Select
+      variant="outline"
+      value={variationId ?? 'rollout'}
+      onChange={(e) => setVariationId(e.target.value as any)}
+    >
+      {flag.variations.map((variation) => {
+        return (
+          <option key={variation._id} value={variation._id}>
+            {variation.name} {variation.value.toString()}
+          </option>
+        );
+      })}
+      <option value={'rollout'} disabled>
+        Percentage rollout (not yet supported)
+      </option>
+    </Select>
   );
 };
