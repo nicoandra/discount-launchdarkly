@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Checkbox,
+  Code,
   FormLabel,
   Input,
   Modal,
@@ -36,17 +37,29 @@ export const FlagCreateModal = ({
   const [usingEnvironmentId, setUsingEnvironmentId] = useState<boolean>(false);
   const [isPermament, setIsPermament] = useState<boolean>(false);
   const [tagsCsv, setTagsCsv] = useState<string>('');
+  const [kind, setKind] = useState<'boolean' | 'string'>('boolean');
+  const [stringVariationsCsv, setStringVariationsCsv] = useState<string>('');
 
   const tags = useMemo(() => {
     const normalizedTags = tagsCsv.split(',').map((tag) => tag.trim());
     return lodash.compact(normalizedTags);
   }, [tagsCsv]);
 
+  const variations = useMemo(() => {
+    if (kind === 'string') {
+      const normalizedStrings = lodash.compact(stringVariationsCsv.split(',').map((s) => s.trim()));
+      return normalizedStrings.map((s) => ({ value: s }));
+    }
+    return [{ value: true }, { value: false }];
+  }, [kind, stringVariationsCsv]);
+
   const canConfirm = useMemo(() => {
     const hasName = (name ?? '').trim().length > 0;
     const hasKey = (key ?? '').trim().length > 0;
-    return hasName && hasKey;
-  }, [name, key]);
+    const hasSufficientVariations = variations.length >= 2;
+    return hasName && hasKey && hasSufficientVariations;
+  }, [name, key, variations]);
+
   return (
     <Modal isOpen={isOpen} onClose={onCancel} size="xl">
       <ModalOverlay />
@@ -88,9 +101,9 @@ export const FlagCreateModal = ({
               onChange={(e) => setTagsCsv(e.target.value)}
             />
           </Box>
-          <Box marginTop="3">
+          <Box marginTop="5">
             <FormLabel>
-              Client-side SDK availability. Control which client-side SDKs can use this flag.
+              <b>Client-side SDK availability.</b> Control which client-side SDKs can use this flag.
             </FormLabel>
             <Stack spacing={5} direction="row">
               <Checkbox
@@ -107,16 +120,40 @@ export const FlagCreateModal = ({
               </Checkbox>
             </Stack>
           </Box>
-          <Box marginTop="3">
-            <FormLabel>Flag variations</FormLabel>
-            <Select variant="outline" onChange={(e) => console.log('select:', e)}>
+          <Box marginTop="5">
+            <FormLabel>
+              <b>Flag variations</b>
+            </FormLabel>
+            <Select variant="outline" value={kind} onChange={(e) => setKind(e.target.value as any)}>
               <option value="boolean">Boolean</option>
               <option value="string">String</option>
               {/* add other options eventually: number / JSON */}
             </Select>
-            <Box></Box>
+            <Box marginTop="3">
+              {kind === 'string' ? (
+                <>
+                  <FormLabel>
+                    <p>Enter a comma-separated list of 2+ variations.</p>
+                    <p>
+                      The default <b>ON</b> variation will be the first string, and the default{' '}
+                      <b>OFF</b> variation will be the second string.
+                    </p>
+                  </FormLabel>
+                  <Input
+                    placeholder="comma,separated,variations"
+                    value={stringVariationsCsv}
+                    onChange={(e) => setStringVariationsCsv(e.target.value)}
+                  />
+                </>
+              ) : (
+                <FormLabel>
+                  The default <b>ON</b> variation will be the <Code>true</Code>, and the default{' '}
+                  <b>OFF</b> variation <Code>false</Code>.
+                </FormLabel>
+              )}
+            </Box>
           </Box>
-          <Box marginTop="3">
+          <Box marginTop="5">
             <Checkbox isChecked={isPermament} onChange={(e) => setIsPermament(e.target.checked)}>
               This is a permament flag
             </Checkbox>
@@ -139,7 +176,7 @@ export const FlagCreateModal = ({
                   usingEnvironmentId,
                   usingMobileKey,
                 },
-                variations: [{ value: true }, { value: false }],
+                variations,
                 defaults: {
                   onVariation: 0,
                   offVariation: 1,
