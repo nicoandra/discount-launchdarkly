@@ -12,7 +12,9 @@ cd discount-launchdarly
 yarn
 ```
 
-create `.env` (see `.env.sample`) with a LD API key. The key must have `writer` permission for ability to create/modify flags.
+create `.env` (see `.env.sample`) with a LD access token. The key must have minimum `reader` role, but ideally `writer` role for ability to create/modify flags.
+
+this access token can be created here: https://app.launchdarkly.com/settings/authorization
 
 ### running it locally
 
