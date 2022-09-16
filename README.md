@@ -2,6 +2,8 @@
 
 a cobbled together alternative UI to launchdarkly, allowing read/write access via LD's REST API
 
+<img width="600" src="https://user-images.githubusercontent.com/158675/190828170-57dc21f7-e195-4703-859f-70268118a9e3.png">
+
 ### setup
 
 make sure you have a recent version of node.js installed
