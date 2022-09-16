@@ -55,6 +55,7 @@ export const DashboardFlagsList = () => {
         (flag) =>
           flag.key.includes(normalizedFilter) ||
           flag.name.toLocaleLowerCase().includes(normalizedFilter) ||
+          flag.description.toLocaleLowerCase().includes(normalizedFilter) ||
           lodash.find(flag.tags ?? [], (tag) => tag.toLocaleLowerCase().includes(normalizedFilter)),
       );
     }
@@ -109,7 +110,7 @@ export const DashboardFlagsList = () => {
   return (
     <Box marginTop="4">
       <HStack flex={1} justifyContent="space-between">
-        <Box minW="400" maxW="400" paddingLeft="4">
+        <Box minW="400" maxW="400">
           <InputGroup>
             <Input autoFocus placeholder="Filter flags" value={filter} onChange={onChangeFilter} />
           </InputGroup>
