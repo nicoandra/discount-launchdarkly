@@ -25,7 +25,7 @@ export const useListFlags = ({
       method: 'GET',
       query: {
         env: env ?? '',
-        summary: '1',
+        summary: 'false', // Include all rules/targeting
         archived: (archived ?? false).toString(),
       },
     },
