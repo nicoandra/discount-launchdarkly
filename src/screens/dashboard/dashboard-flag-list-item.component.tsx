@@ -12,6 +12,7 @@ import {
   Tag,
   Text,
   Tooltip,
+  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
@@ -36,6 +37,7 @@ export const DashboardFlagListItem = ({
   refetchFlags,
 }: DashboardFlagListItemInterface) => {
   const { env } = useLaunchDarklyConfig();
+  const borderColor = useColorModeValue('gray.200', 'gray.700');
   const {
     onOpen: openToggleFlag,
     isOpen: isOpenToggleFlag,
@@ -102,7 +104,7 @@ export const DashboardFlagListItem = ({
     <Stack
       direction="row"
       borderBottom={isLastItem ? '0px' : '1px'}
-      borderColor="gray.600"
+      borderColor={borderColor}
       paddingBottom="3"
       paddingTop="3"
     >

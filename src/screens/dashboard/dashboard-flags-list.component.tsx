@@ -19,7 +19,8 @@ import { DashboardFlagListItem } from './dashboard-flag-list-item.component';
 const PER_PAGE = 100;
 
 export const DashboardFlagsList = () => {
-  const containerBg = useColorModeValue('white', 'black');
+  const containerBg = useColorModeValue('white', 'gray.900');
+  const containerBorderColor = useColorModeValue('gray.200', 'gray.700');
   const [filter, setFilter] = useState<string>('');
   const [debouncedFilter, setDebouncedFilter] = useState<string>('');
   const [page, setPage] = useState<number>(0);
@@ -101,7 +102,7 @@ export const DashboardFlagsList = () => {
 
   if (loadingFlags) {
     return (
-      <Center>
+      <Center minH="250" justifyContent={'center'}>
         <Spinner thickness="4px" speed="0.65s" emptyColor="gray.200" color="blue.500" size="xl" />
       </Center>
     );
@@ -112,7 +113,13 @@ export const DashboardFlagsList = () => {
       <HStack flex={1} justifyContent="space-between">
         <Box minW="400" maxW="400">
           <InputGroup>
-            <Input autoFocus placeholder="Filter flags" value={filter} onChange={onChangeFilter} />
+            <Input
+              autoFocus
+              placeholder="Filter flags"
+              value={filter}
+              onChange={onChangeFilter}
+              borderColor="gray.500"
+            />
           </InputGroup>
         </Box>
         <HStack>
@@ -139,9 +146,11 @@ export const DashboardFlagsList = () => {
       </HStack>
       <Box
         bg={containerBg}
+        borderColor={containerBorderColor}
+        borderWidth="1px"
         marginTop="4"
-        paddingLeft="4"
-        paddingRight="4"
+        paddingLeft="5"
+        paddingRight="5"
         paddingTop="2"
         paddingBottom="2"
         borderRadius="md"
