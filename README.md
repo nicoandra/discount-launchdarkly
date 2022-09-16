@@ -1,6 +1,6 @@
 # discount-launchdarkly
 
-a cobbled together alternative UI to launchdarkly, allowing read/write access via LD's REST API
+a cobbled together alternative UI to launchdarkly, allowing read/write access via LD API access token
 
 <img width="600" src="https://user-images.githubusercontent.com/158675/190828170-57dc21f7-e195-4703-859f-70268118a9e3.png">
 
