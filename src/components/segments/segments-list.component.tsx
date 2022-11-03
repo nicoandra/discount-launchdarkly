@@ -22,29 +22,21 @@ import {
   Tooltip,
   useColorModeValue,
 } from '@chakra-ui/react';
-import { ListFlagsResponse } from 'hooks/use-list-flags';
+import { ListSegmentsResponse } from 'hooks/use-list-segments';
 import lodash from 'lodash';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { DashboardFlagListItem } from './dashboard-flag-list-item.component';
+import { SegmentListItem } from './segment-list-item.component';
 
-const PER_PAGE = 100;
+const PER_PAGE = 25;
 
-interface DashboardFlagsListInterface {
+interface SegmentsListInterface {
   loading: boolean;
-  flags: ListFlagsResponse | null;
-  refetchFlags: () => Promise<void>;
-  includeArchived: boolean;
-  setIncludeArchived: (includeArchived: boolean) => void;
+  segments: ListSegmentsResponse | null;
 }
-export const DashboardFlagsList = ({
-  loading,
-  flags,
-  refetchFlags,
-  includeArchived,
-  setIncludeArchived,
-}: DashboardFlagsListInterface) => {
+export const SegmentsList = ({ loading, segments }: SegmentsListInterface) => {
   const containerBg = useColorModeValue('white', 'gray.900');
   const containerBorderColor = useColorModeValue('gray.200', 'gray.700');
+  const [includeDeleted, setIncludeDeleted] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>('');
   const [debouncedFilter, setDebouncedFilter] = useState<string>('');
   const [page, setPage] = useState<number>(0);
@@ -60,71 +52,65 @@ export const DashboardFlagsList = ({
     debouncedFilterRef(filter);
   }, [filter]);
 
-  // console.log({ projectKey, loading, flags });
-
-  const filteredFlags = useMemo(() => {
-    if (!flags?.items?.length) {
+  const filteredSegments = useMemo(() => {
+    if (!segments?.items?.length) {
       return [];
     }
-    let filteredFlags = flags.items;
+    let filteredSegments = segments.items.filter((segment) => {
+      return segment.deleted === includeDeleted;
+    });
     const normalizedFilter = (debouncedFilter ?? '').trim().toLocaleLowerCase();
     if (normalizedFilter.length > 2) {
-      filteredFlags = filteredFlags.filter((flag) => {
-        const simpleMatch =
-          flag.key.includes(normalizedFilter) ||
-          flag.name.toLocaleLowerCase().includes(normalizedFilter) ||
-          flag.description.toLocaleLowerCase().includes(normalizedFilter) ||
-          lodash.find(flag.tags ?? [], (tag) => tag.toLocaleLowerCase().includes(normalizedFilter));
-        if (simpleMatch) {
-          return simpleMatch;
-        }
-        for (const env in flag.environments) {
-          const flagEnv = flag.environments[env];
-          for (const rule of flagEnv.rules || []) {
-            return !!rule.clauses.find((clause) => clause.values.includes(normalizedFilter));
-          }
-        }
+      filteredSegments = filteredSegments.filter((segment) => {
+        return (
+          segment.key.includes(normalizedFilter) ||
+          segment.name.toLocaleLowerCase().includes(normalizedFilter) ||
+          lodash.find(segment.tags ?? [], (tag) =>
+            tag.toLocaleLowerCase().includes(normalizedFilter),
+          ) ||
+          segment.included.includes(normalizedFilter) ||
+          segment.excluded.includes(normalizedFilter)
+        );
       });
     }
-    return lodash.orderBy(filteredFlags, 'creationDate', 'desc');
-  }, [flags, debouncedFilter, page]);
+    return lodash.orderBy(filteredSegments, 'creationDate', 'desc');
+  }, [segments, debouncedFilter, page, includeDeleted]);
 
-  const paginatedFlags = useMemo(() => {
+  const paginatedSegments = useMemo(() => {
     const pageStart = page * PER_PAGE;
     const pageEnd = pageStart + PER_PAGE;
-    return filteredFlags.slice(pageStart, pageEnd);
-  }, [filteredFlags]);
+    return filteredSegments.slice(pageStart, pageEnd);
+  }, [filteredSegments]);
 
   const onChangeFilter = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value);
   }, []);
 
-  const memoizedFlagItems = useMemo(() => {
-    if (!paginatedFlags?.length) {
-      return <Center>No flags found!</Center>;
+  const memoizedSegmentItems = useMemo(() => {
+    if (!paginatedSegments?.length) {
+      return <Center>No segments found!</Center>;
     }
-    return paginatedFlags.map((flag, i, { length }) => {
+    return paginatedSegments.map((segment, i, { length }) => {
       const isLastItem = i + 1 === length;
       return (
-        <DashboardFlagListItem
-          key={flag.key}
-          flag={flag}
+        <SegmentListItem
+          key={segment.key}
+          segment={segment}
           setFilter={setFilter}
           isLastItem={isLastItem}
-          refetchFlags={refetchFlags}
         />
       );
     });
-  }, [paginatedFlags]);
+  }, [paginatedSegments]);
 
   const normalizedPage = useMemo(() => {
     const first = page * PER_PAGE + 1;
-    const last = first + paginatedFlags.length - 1;
-    const totalFlags = filteredFlags.length;
+    const last = first + paginatedSegments.length - 1;
+    const totalSegments = filteredSegments.length;
     const isFirstPage = page === 0;
-    const isLastPage = !totalFlags || last >= totalFlags;
-    return { first, last, totalFlags, isFirstPage, isLastPage };
-  }, [page, paginatedFlags, filteredFlags]);
+    const isLastPage = !totalSegments || last >= totalSegments;
+    return { first, last, totalSegments, isFirstPage, isLastPage };
+  }, [page, paginatedSegments, filteredSegments]);
 
   if (loading) {
     return (
@@ -142,14 +128,17 @@ export const DashboardFlagsList = ({
             <InputGroup>
               <Input
                 autoFocus
-                placeholder="Filter flags"
+                placeholder="Filter segments"
                 value={filter}
                 onChange={onChangeFilter}
                 borderColor="gray.500"
               />
               <InputRightElement
                 children={
-                  <Tooltip label="Filter by flag name, description, tag, or segment" fontSize="md">
+                  <Tooltip
+                    label="Filter by segment name, tag, or included/excluded value"
+                    fontSize="md"
+                  >
                     <QuestionOutlineIcon />
                   </Tooltip>
                 }
@@ -165,15 +154,15 @@ export const DashboardFlagsList = ({
             />
             <MenuList>
               <MenuOptionGroup
-                value={includeArchived ? 'archived' : 'unarchived'}
+                value={includeDeleted ? 'deleted' : 'active'}
                 title="Show only"
                 type="radio"
               >
-                <MenuItemOption value="unarchived" onClick={() => setIncludeArchived(false)}>
-                  Unarchived flags
+                <MenuItemOption value="active" onClick={() => setIncludeDeleted(false)}>
+                  Active segments
                 </MenuItemOption>
-                <MenuItemOption value="archived" onClick={() => setIncludeArchived(true)}>
-                  Archived flags
+                <MenuItemOption value="deleted" onClick={() => setIncludeDeleted(true)}>
+                  Deleted segments
                 </MenuItemOption>
               </MenuOptionGroup>
             </MenuList>
@@ -186,13 +175,13 @@ export const DashboardFlagsList = ({
             disabled={normalizedPage.isFirstPage}
             onClick={() => setPage(page - 1)}
           />
-          {normalizedPage.totalFlags && (
+          {normalizedPage.totalSegments && (
             <Text align="right">
               Showing{' '}
               <b>
                 {normalizedPage.first}-{normalizedPage.last}
               </b>{' '}
-              of {normalizedPage.totalFlags} flags
+              of {normalizedPage.totalSegments} segments
             </Text>
           )}
           <IconButton
@@ -214,7 +203,7 @@ export const DashboardFlagsList = ({
         paddingBottom="2"
         borderRadius="md"
       >
-        {memoizedFlagItems}
+        {memoizedSegmentItems}
       </Box>
     </Box>
   );

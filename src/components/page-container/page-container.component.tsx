@@ -1,13 +1,42 @@
-import { Box, Button, Center, Container, Heading, HStack, Text, Tooltip } from '@chakra-ui/react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  Button,
+  Center,
+  Container,
+  Heading,
+  HStack,
+  Text,
+  Tooltip,
+} from '@chakra-ui/react';
 import { ColorModeToggle } from 'components/color-mode-toggle';
 import { useLaunchDarklyConfig } from 'hooks/use-launchdarkly-config';
 
 export const PageContainer = ({ children }: React.PropsWithChildren) => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const { accessToken } = useLaunchDarklyConfig();
 
   return (
     <Container maxW="1100px" paddingTop="5" paddingBottom="10">
       <HStack>
+        <Breadcrumb separator="/">
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">
+              <Text as={location?.pathname === '/' || location?.pathname === '' ? 'b' : 'span'}>
+                Projects
+              </Text>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/segments">
+              <Text as={location?.pathname === '/segments' ? 'b' : 'span'}>Segments</Text>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
         <ColorModeToggle />
         {accessToken && (
           <Tooltip
@@ -18,7 +47,9 @@ export const PageContainer = ({ children }: React.PropsWithChildren) => {
         )}
       </HStack>
       <Heading paddingTop="3" fontSize="3xl" textAlign="center">
-        Discount LaunchDarkly 🤨
+        <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+          Discount LaunchDarkly 🤨
+        </span>
       </Heading>
       <Center>
         <Text
