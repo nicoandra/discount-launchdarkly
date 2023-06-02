@@ -1,0 +1,25 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-amplifyf05bd0bfeab44-staging-200823-authRole",
+      "UnauthRoleArn": "arn:aws:iam::222432380591:role/amplify-amplifyf05bd0bfeab44-staging-200823-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::222432380591:role/amplify-amplifyf05bd0bfeab44-staging-200823-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-amplifyf05bd0bfeab44-staging-200823-deployment",
+      "UnauthRoleName": "amplify-amplifyf05bd0bfeab44-staging-200823-unauthRole",
+      "StackName": "amplify-amplifyf05bd0bfeab44-staging-200823",
+      "StackId": "arn:aws:cloudformation:us-east-1:222432380591:stack/amplify-amplifyf05bd0bfeab44-staging-200823/3abc6c20-0181-11ee-a66c-0ad66163eae7",
+      "AmplifyAppId": "d3nqipgmcpj03z"
+    },
+    "categories": {
+      "auth": {
+        "discountlaunchdarklybc5d3941": {}
+      },
+      "function": {
+        "discountlaunchdarklybc5d3941PostConfirmation": {
+          "GROUP": "roofr-devs"
+        }
+      }
+    }
+  }
+}

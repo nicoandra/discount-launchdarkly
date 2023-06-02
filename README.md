@@ -1,3 +1,18 @@
+# Fork of discount-launchdarkly
+
+Desiged to be used through a Lambda endpoint.
+
+Uses AWS Amplify behind the scenes.
+
+
+
+1. Fork original repo.
+2. Use Amplify Console to Host an app from Github.
+3. Clone the repo locally.
+4. Run `amplify pull (APP_ID) --envName staging`
+5. Run `amplify push` to ensure it works.
+6. Add a Cognito User Pool: `amplify add auth`
+
 # discount-launchdarkly
 
 a cobbled together alternative UI to launchdarkly, allowing read/write access via LD API access token
