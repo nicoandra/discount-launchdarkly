@@ -4,14 +4,15 @@ Desiged to be used through a Lambda endpoint.
 
 Uses AWS Amplify behind the scenes.
 
-
-
 1. Fork original repo.
 2. Use Amplify Console to Host an app from Github.
 3. Clone the repo locally.
 4. Run `amplify pull (APP_ID) --envName staging`
 5. Run `amplify push` to ensure it works.
 6. Add a Cognito User Pool: `amplify add auth`
+7. Build the Proxy function
+8. Disable the Auth AWS_IAM and make it NONE. User validation will happen in Lambda (TODO: see if AWS can block request before spinning lambda)
+9. Find the COGNITO ID
 
 # discount-launchdarkly
 

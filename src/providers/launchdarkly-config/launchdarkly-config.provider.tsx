@@ -54,13 +54,10 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
   }, [environments]);
 
   const accessToken = useMemo(() => {
-    if (!accessTokens || !apiKey) {
-      return null;
-    }
-    return accessTokens.items.find((token) => apiKey.endsWith(token.token)) ?? null;
-  }, [apiKey, accessTokens]);
+    return null;
+  }, []);
 
-  const loading = loadingProjects || loadingAccessTokens || !accessToken || !env || !environments;
+  const loading = loadingProjects || !env || !environments;
 
   return (
     <LaunchDarklyConfigContext.Provider

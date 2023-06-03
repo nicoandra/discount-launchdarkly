@@ -1,4 +1,20 @@
 {
+  "api": {
+    "launchdarklyproxy": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "Name",
+            "Arn"
+          ],
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "API Gateway"
+    }
+  },
   "auth": {
     "discountlaunchdarklybc5d3941": {
       "customAuth": false,
@@ -9,7 +25,7 @@
             "Name"
           ],
           "category": "function",
-          "resourceName": "discountlaunchdarklybc5d3941PostConfirmation",
+          "resourceName": "discountlaunchdarklybc5d3941PreSignup",
           "triggerProvider": "Cognito"
         }
       ],
@@ -35,21 +51,122 @@
       },
       "providerPlugin": "awscloudformation",
       "service": "Cognito"
+    },
+    "userPoolGroups": {
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId",
+            "AppClientIDWeb",
+            "AppClientID"
+          ],
+          "category": "auth",
+          "resourceName": "discountlaunchdarklybc5d3941"
+        }
+      ],
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito-UserPool-Groups"
     }
   },
   "function": {
-    "discountlaunchdarklybc5d3941PostConfirmation": {
+    "discountlaunchdarklybc5d3941PreSignup": {
       "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda"
+    },
+    "proxy": {
+      "build": true,
+      "dependsOn": [
+        {
+          "attributes": [
+            "UserPoolId"
+          ],
+          "category": "auth",
+          "resourceName": "discountlaunchdarklybc5d3941"
+        }
+      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
   "parameters": {
-    "AMPLIFY_function_discountlaunchdarklybc5d3941PostConfirmation_GROUP": {
+    "AMPLIFY_function_discountlaunchdarklybc5d3941PreSignup_DOMAINALLOWLIST": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "discountlaunchdarklybc5d3941PostConfirmation"
+          "resourceName": "discountlaunchdarklybc5d3941PreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_discountlaunchdarklybc5d3941PreSignup_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "discountlaunchdarklybc5d3941PreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_discountlaunchdarklybc5d3941PreSignup_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "discountlaunchdarklybc5d3941PreSignup"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_cognitoClientId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_cognitoGroup": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_cognitoUserPoolId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_deploymentBucketName": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_launchDarklyApiKeySsmPath": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_s3Key": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_function_proxy_secretsPathAmplifyAppId": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
         }
       ]
     }
