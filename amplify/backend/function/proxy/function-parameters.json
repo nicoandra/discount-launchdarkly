@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "auth": {
+      "discountlaunchdarklybc5d3941": [
+        "read",
+        "delete"
+      ]
+    }
+  },
+  "lambdaLayers": [],
+  "secretNames": [
+    "LAUNCH_DARKLY_API_KEY"
+  ],
+  "environmentVariableList": [
+    {
+      "cloudFormationParameterName": "cognitoUserPoolId",
+      "environmentVariableName": "COGNITO_USER_POOL_ID"
+    },
+    {
+      "cloudFormationParameterName": "cognitoClientId",
+      "environmentVariableName": "COGNITO_CLIENT_ID"
+    },
+    {
+      "cloudFormationParameterName": "cognitoGroup",
+      "environmentVariableName": "COGNITO_GROUP"
+    },
+    {
+      "cloudFormationParameterName": "launchDarklyApiKeySsmPath",
+      "environmentVariableName": "LAUNCH_DARKLY_API_KEY_SSM_PATH"
+    }
+  ]
+}
