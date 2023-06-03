@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import lodash from 'lodash';
 import { FlagItem } from 'hooks/use-list-flags/types';
-
+import { Auth } from 'aws-amplify';
 export interface LaunchDarklyApiFetchProps {
   path: string;
   query?: Record<string, string | null>;
@@ -13,9 +13,11 @@ export interface LaunchDarklyApiFetchProps {
 
 export class LaunchDarklyApi {
   apiKey: string;
+  cognitoUser: any;
 
-  constructor({ apiKey }: { apiKey: string }) {
+  constructor({ apiKey, cognitoUser }: { apiKey: string; cognitoUser: any }) {
     this.apiKey = apiKey;
+    this.cognitoUser = cognitoUser;
   }
 
   async fetch<T>({
@@ -29,8 +31,13 @@ export class LaunchDarklyApi {
     if (skip) {
       return Promise.resolve(null);
     }
+
+    // const loggedInUser = await Auth.currentAuthenticatedUser();
+    const userJwtToken = (await Auth.currentSession()).getIdToken().getJwtToken();
     const pathWithPrefix = path.startsWith('/') ? path : `/${path}`;
-    let url = `https://app.launchdarkly.com${pathWithPrefix}`;
+    // let url = `https://app.launchdarkly.com${pathWithPrefix}`;
+    let url = `${process.env.REACT_APP_PROXY_ENDPOINT}${pathWithPrefix}`;
+
     if (query) {
       const queryString = new URLSearchParams(
         lodash.omitBy(query, lodash.isNil) as Record<string, string>,
@@ -42,7 +49,7 @@ export class LaunchDarklyApi {
       method,
       body,
       headers: {
-        Authorization: this.apiKey,
+        Authorization: `Bearer ${userJwtToken}`,
         ...headers,
       },
     });
