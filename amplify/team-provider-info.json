@@ -63,11 +63,11 @@
         "proxy": {
           "secretsPathAmplifyAppId": "d3nqipgmcpj03z",
           "deploymentBucketName": "amplify-discountlaunchdarkly-dev-123535-deployment",
-          "s3Key": "amplify-builds/proxy-666a7551436f696b4e4c-build.zip",
-          "cognitoUserPoolId": "us-east-1_OvAIGOpBf",
-          "cognitoClientId": "3358sl7p91utbeoks6kn3ka6mc",
-          "cognitoGroup": "roofr-devs",
-          "launchDarklyApiKeySsmPath": "/amplify/d3nqipgmcpj03z/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY"
+          "s3Key": "amplify-builds/proxy-6c4e776b535a3178396e-build.zip",
+          "launchDarklyApiKeySsmPath": "/amplify/d3nqipgmcpj03z/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY",
+          "cognitoGroup": "developers",
+          "cognitoUserPoolId": "us-east-1_XSCxu1XhI",
+          "cognitoClientId": "425ktoghon2lr950j2jjqfbs8d"
         },
         "discountlaunchdarklybc5d3941": {}
       },

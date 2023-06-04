@@ -23,16 +23,16 @@
     "secretsPathAmplifyAppId": {
       "Type": "String"
     },
-    "cognitoUserPoolId": {
-      "Type": "String"
-    },
-    "cognitoClientId": {
+    "launchDarklyApiKeySsmPath": {
       "Type": "String"
     },
     "cognitoGroup": {
       "Type": "String"
     },
-    "launchDarklyApiKeySsmPath": {
+    "cognitoUserPoolId": {
+      "Type": "String"
+    },
+    "cognitoClientId": {
       "Type": "String"
     }
   },
@@ -114,17 +114,17 @@
                 ]
               ]
             },
+            "LAUNCH_DARKLY_API_KEY_SSM_PATH": {
+              "Ref": "launchDarklyApiKeySsmPath"
+            },
+            "COGNITO_GROUP": {
+              "Ref": "cognitoGroup"
+            },
             "COGNITO_USER_POOL_ID": {
               "Ref": "cognitoUserPoolId"
             },
             "COGNITO_CLIENT_ID": {
               "Ref": "cognitoClientId"
-            },
-            "COGNITO_GROUP": {
-              "Ref": "cognitoGroup"
-            },
-            "LAUNCH_DARKLY_API_KEY_SSM_PATH": {
-              "Ref": "launchDarklyApiKeySsmPath"
             }
           }
         },
