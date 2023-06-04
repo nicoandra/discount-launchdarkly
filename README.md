@@ -14,6 +14,12 @@ Uses AWS Amplify behind the scenes.
 8. Disable the Auth AWS_IAM and make it NONE. User validation will happen in Lambda (TODO: see if AWS can block request before spinning lambda)
 9. Find the COGNITO ID
 
+Next Steps:
+
+1. Create different user groups: read-only, read-write, default
+2. Create one secret for each user type (except default)
+3. Use different keys depending on which user group is used.
+
 # discount-launchdarkly
 
 a cobbled together alternative UI to launchdarkly, allowing read/write access via LD API access token
