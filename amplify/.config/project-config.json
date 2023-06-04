@@ -11,7 +11,7 @@
       "SourceDir": "src",
       "DistributionDir": "build",
       "BuildCommand": "yarn build",
-      "StartCommand": "yarn start"
+      "StartCommand": "yarn run start"
     }
   }
 }
