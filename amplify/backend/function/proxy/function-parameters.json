@@ -13,20 +13,20 @@
   ],
   "environmentVariableList": [
     {
-      "cloudFormationParameterName": "cognitoUserPoolId",
-      "environmentVariableName": "COGNITO_USER_POOL_ID"
-    },
-    {
-      "cloudFormationParameterName": "cognitoClientId",
-      "environmentVariableName": "COGNITO_CLIENT_ID"
+      "cloudFormationParameterName": "launchDarklyApiKeySsmPath",
+      "environmentVariableName": "LAUNCH_DARKLY_API_KEY_SSM_PATH"
     },
     {
       "cloudFormationParameterName": "cognitoGroup",
       "environmentVariableName": "COGNITO_GROUP"
     },
     {
-      "cloudFormationParameterName": "launchDarklyApiKeySsmPath",
-      "environmentVariableName": "LAUNCH_DARKLY_API_KEY_SSM_PATH"
+      "cloudFormationParameterName": "cognitoUserPoolId",
+      "environmentVariableName": "COGNITO_USER_POOL_ID"
+    },
+    {
+      "cloudFormationParameterName": "cognitoClientId",
+      "environmentVariableName": "COGNITO_CLIENT_ID"
     }
   ]
 }

@@ -12,6 +12,7 @@ const { Parameters } = await (new aws.SSM())
 
 Parameters will be of the form { Name: 'secretName', Value: 'secretValue', ... }[]
 */
+
 /*
 Copyright 2017 - 2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
@@ -93,7 +94,7 @@ app.use(async function (req, res, next) {
     return res.status(401).json({ error: 'Not authorized 3' });
   }
 
-  if (!payload['cognito:groups'].includes(process.env.COGNITO_GROUP)) {
+  if (!payload['cognito:groups'] || !payload['cognito:groups'].includes(process.env.COGNITO_GROUP)) {
     return res.status(401).json({ error: 'Not authorized 4' });
   }
 
