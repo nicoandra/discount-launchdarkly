@@ -16,9 +16,11 @@ Uses AWS Amplify behind the scenes.
 
 Next Steps:
 
+1. Enable multiple environments in Amplify
 1. Create different user groups: read-only, read-write, default
 2. Create one secret for each user type (except default)
 3. Use different keys depending on which user group is used.
+
 
 # discount-launchdarkly
 
