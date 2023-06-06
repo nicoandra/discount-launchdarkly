@@ -50,7 +50,7 @@ export const LaunchDarklyApiProvider = ({ children }: LaunchDarklyApiProviderPro
               </Link>
               .
             </Text>
-            <Text>{JSON.stringify(cognitoUser)}</Text>
+            <Text>User is: {JSON.stringify(cognitoUser)}</Text>
           </Center>
         </Container>
       )}
