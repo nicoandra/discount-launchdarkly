@@ -75,5 +75,48 @@
         "launchdarklyproxy": {}
       }
     }
+  },
+  "devnic": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-discountlaunchdarkly-devnic-165639-authRole",
+      "UnauthRoleArn": "arn:aws:iam::222432380591:role/amplify-discountlaunchdarkly-devnic-165639-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::222432380591:role/amplify-discountlaunchdarkly-devnic-165639-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-discountlaunchdarkly-devnic-165639-deployment",
+      "UnauthRoleName": "amplify-discountlaunchdarkly-devnic-165639-unauthRole",
+      "StackName": "amplify-discountlaunchdarkly-devnic-165639",
+      "StackId": "arn:aws:cloudformation:us-east-1:222432380591:stack/amplify-discountlaunchdarkly-devnic-165639/a3058cc0-04ac-11ee-98a8-0a7141983ce1",
+      "AmplifyAppId": "d3nqipgmcpj03z",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-discountlaunchdarkly-devnic-165639-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "discountlaunchdarklybc5d3941": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "discountlaunchdarklybc5d3941PreSignup": {
+          "DOMAINALLOWLIST": "roofr.com,nmac.com.ar",
+          "deploymentBucketName": "amplify-discountlaunchdarkly-devnic-165639-deployment",
+          "s3Key": "amplify-builds/discountlaunchdarklybc5d3941PreSignup-6f5049487346464e454c-build.zip"
+        },
+        "proxy": {
+          "secretsPathAmplifyAppId": "d3nqipgmcpj03z",
+          "deploymentBucketName": "amplify-discountlaunchdarkly-devnic-165639-deployment",
+          "s3Key": "amplify-builds/proxy-6c4e776b535a3178396e-build.zip",
+          "launchDarklyApiKeySsmPath": "/amplify/d3nqipgmcpj03z/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY",
+          "cognitoGroup": "developers",
+          "cognitoUserPoolId": "us-east-1_XSCxu1XhI",
+          "cognitoClientId": "425ktoghon2lr950j2jjqfbs8d"
+        },
+        "discountlaunchdarklybc5d3941": {}
+      },
+      "api": {
+        "launchdarklyproxy": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
   }
 }
