@@ -35,7 +35,6 @@ export class LaunchDarklyApi {
     // const loggedInUser = await Auth.currentAuthenticatedUser();
     const userJwtToken = (await Auth.currentSession()).getIdToken().getJwtToken();
     const pathWithPrefix = path.startsWith('/') ? path : `/${path}`;
-    // let url = `https://app.launchdarkly.com${pathWithPrefix}`;
     let url = `${process.env.REACT_APP_PROXY_ENDPOINT}${pathWithPrefix}`;
 
     if (query) {

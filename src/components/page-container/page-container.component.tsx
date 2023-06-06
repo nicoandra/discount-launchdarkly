@@ -47,7 +47,7 @@ export const PageContainer = ({ children }: React.PropsWithChildren) => {
       </HStack>
       <Heading paddingTop="3" fontSize="3xl" textAlign="center">
         <span style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
-          Discount LaunchDarkly 🤨
+          Discount LaunchDarkly - powered by AWS Lambda 🤨
         </span>
       </Heading>
       <Center>
