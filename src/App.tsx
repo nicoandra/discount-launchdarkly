@@ -23,12 +23,15 @@ const Application: React.FC<WithAuthenticatorProps> = (props) => {
         <Button onClick={signOut}>{user?.attributes?.email} log out</Button>
         <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <LaunchDarklyApiProvider>
+          <>
+          One child
           <LaunchDarklyConfigProvider>
             <Routes>
               <Route path="/" element={<DashboardScreen />} />
               <Route path="/segments" element={<SegmentsScreen />} />
             </Routes>
           </LaunchDarklyConfigProvider>
+          </>
         </LaunchDarklyApiProvider>
       </ChakraProvider>
     </BrowserRouter>
