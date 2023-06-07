@@ -74,10 +74,7 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
           <Spinner />
         </Center>
       ) : (
-        <>
-          In LaunchDarklyConfigProvider
-          {children}
-        </>
+        children
       )}
     </LaunchDarklyConfigContext.Provider>
   );

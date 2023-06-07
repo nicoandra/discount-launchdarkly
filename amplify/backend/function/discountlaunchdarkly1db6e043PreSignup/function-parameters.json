@@ -3,14 +3,14 @@
   "modules": [
     "email-filter-allowlist"
   ],
-  "parentResource": "discountlaunchdarklybc5d3941",
-  "functionName": "discountlaunchdarklybc5d3941PreSignup",
-  "resourceName": "discountlaunchdarklybc5d3941PreSignup",
+  "parentResource": "discountlaunchdarkly1db6e043",
+  "functionName": "discountlaunchdarkly1db6e043PreSignup",
+  "resourceName": "discountlaunchdarkly1db6e043PreSignup",
   "parentStack": "auth",
   "triggerEnvs": "[]",
   "triggerDir": "/snapshot/repo/build/node_modules/@aws-amplify/amplify-category-auth/provider-utils/awscloudformation/triggers/PreSignup",
   "triggerTemplate": "PreSignup.json.ejs",
   "triggerEventPath": "PreSignup.event.json",
-  "roleName": "discountlaunchdarklybc5d3941PreSignup",
+  "roleName": "discountlaunchdarkly1db6e043PreSignup",
   "skipEdit": true
 }

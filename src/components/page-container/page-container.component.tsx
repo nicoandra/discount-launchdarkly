@@ -59,7 +59,7 @@ export const PageContainer = ({ children }: React.PropsWithChildren) => {
           maxW="md"
           alignSelf="center"
         >
-          Use LaunchDarkly via API token.
+          Use LaunchDarkly via API token. Rely on AWS Cognito for authentication. <a href="https://github.com/nicoandra/discount-launchdarkly">Source.</a>
         </Text>
       </Center>
       {children}

@@ -71,12 +71,12 @@
         "FunctionName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "discountlaunchdarklybc5d3941PreSignup",
+            "discountlaunchdarkly1db6e043PreSignup",
             {
               "Fn::Join": [
                 "",
                 [
-                  "discountlaunchdarklybc5d3941PreSignup",
+                  "discountlaunchdarkly1db6e043PreSignup",
                   "-",
                   {
                     "Ref": "env"
@@ -111,7 +111,7 @@
             "Arn"
           ]
         },
-        "Runtime": "nodejs16.x",
+        "Runtime": "nodejs18.x",
         "Timeout": 25,
         "Code": {
           "S3Bucket": {
@@ -129,12 +129,12 @@
         "RoleName": {
           "Fn::If": [
             "ShouldNotCreateEnvResources",
-            "discountlaunchdarklybc5d3941PreSignup",
+            "discountlaunchdarkly1db6e043PreSignup",
             {
               "Fn::Join": [
                 "",
                 [
-                  "discountlaunchdarklybc5d3941PreSignup",
+                  "discountlaunchdarkly1db6e043PreSignup",
                   "-",
                   {
                     "Ref": "env"

@@ -1,6 +1,6 @@
 {
   "api": {
-    "launchdarklyproxy": {
+    "proxy": {
       "dependsOn": [
         {
           "attributes": [
@@ -16,7 +16,7 @@
     }
   },
   "auth": {
-    "discountlaunchdarklybc5d3941": {
+    "discountlaunchdarkly1db6e043": {
       "customAuth": false,
       "dependsOn": [
         {
@@ -25,7 +25,7 @@
             "Name"
           ],
           "category": "function",
-          "resourceName": "discountlaunchdarklybc5d3941PreSignup",
+          "resourceName": "discountlaunchdarkly1db6e043PreSignup",
           "triggerProvider": "Cognito"
         }
       ],
@@ -58,10 +58,11 @@
           "attributes": [
             "UserPoolId",
             "AppClientIDWeb",
-            "AppClientID"
+            "AppClientID",
+            "IdentityPoolId"
           ],
           "category": "auth",
-          "resourceName": "discountlaunchdarklybc5d3941"
+          "resourceName": "discountlaunchdarkly1db6e043"
         }
       ],
       "providerPlugin": "awscloudformation",
@@ -69,49 +70,46 @@
     }
   },
   "function": {
-    "discountlaunchdarklybc5d3941PreSignup": {
+    "discountlaunchdarkly1db6e043PreSignup": {
       "build": true,
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     },
     "proxy": {
       "build": true,
-      "dependsOn": [
-        {
-          "attributes": [
-            "UserPoolId"
-          ],
-          "category": "auth",
-          "resourceName": "discountlaunchdarklybc5d3941"
-        }
-      ],
       "providerPlugin": "awscloudformation",
       "service": "Lambda"
     }
   },
-  "hosting": {},
+  "hosting": {
+    "amplifyhosting": {
+      "providerPlugin": "awscloudformation",
+      "service": "amplifyhosting",
+      "type": "manual"
+    }
+  },
   "parameters": {
-    "AMPLIFY_function_discountlaunchdarklybc5d3941PreSignup_DOMAINALLOWLIST": {
+    "AMPLIFY_function_discountlaunchdarkly1db6e043PreSignup_DOMAINALLOWLIST": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "discountlaunchdarklybc5d3941PreSignup"
+          "resourceName": "discountlaunchdarkly1db6e043PreSignup"
         }
       ]
     },
-    "AMPLIFY_function_discountlaunchdarklybc5d3941PreSignup_deploymentBucketName": {
+    "AMPLIFY_function_discountlaunchdarkly1db6e043PreSignup_deploymentBucketName": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "discountlaunchdarklybc5d3941PreSignup"
+          "resourceName": "discountlaunchdarkly1db6e043PreSignup"
         }
       ]
     },
-    "AMPLIFY_function_discountlaunchdarklybc5d3941PreSignup_s3Key": {
+    "AMPLIFY_function_discountlaunchdarkly1db6e043PreSignup_s3Key": {
       "usedBy": [
         {
           "category": "function",
-          "resourceName": "discountlaunchdarklybc5d3941PreSignup"
+          "resourceName": "discountlaunchdarkly1db6e043PreSignup"
         }
       ]
     },
@@ -168,6 +166,22 @@
         {
           "category": "function",
           "resourceName": "proxy"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_appId": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
+        }
+      ]
+    },
+    "AMPLIFY_hosting_amplifyhosting_type": {
+      "usedBy": [
+        {
+          "category": "hosting",
+          "resourceName": "amplifyhosting"
         }
       ]
     }

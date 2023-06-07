@@ -1,8 +1,10 @@
 {
   "version": "1",
   "cognitoConfig": {
-    "resourceNameTruncated": "discoubc5d3941",
-    "userPoolName": "discountlaunchdarklybc5d3941_userpool_bc5d3941",
+    "identityPoolName": "discountlaunchdarkly1db6e043_identitypool_1db6e043",
+    "allowUnauthenticatedIdentities": false,
+    "resourceNameTruncated": "discou1db6e043",
+    "userPoolName": "discountlaunchdarkly1db6e043_userpool_1db6e043",
     "autoVerifiedAttributes": [
       "email"
     ],
@@ -12,7 +14,7 @@
     ],
     "smsAuthenticationMessage": "Your authentication code is {####}",
     "smsVerificationMessage": "Your verification code is {####}",
-    "emailVerificationSubject": "LD Verification Code",
+    "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
     "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": 8,
@@ -29,12 +31,12 @@
     "userpoolClientReadAttributes": [
       "email"
     ],
-    "userpoolClientLambdaRole": "discoubc5d3941_userpoolclient_lambda_role",
+    "userpoolClientLambdaRole": "discou1db6e043_userpoolclient_lambda_role",
     "userpoolClientSetAttributes": false,
-    "sharedId": "bc5d3941",
-    "resourceName": "discountlaunchdarklybc5d3941",
-    "authSelections": "userPoolOnly",
-    "useDefault": "manual",
+    "sharedId": "1db6e043",
+    "resourceName": "discountlaunchdarkly1db6e043",
+    "authSelections": "identityPoolAndUserPool",
+    "useDefault": "default",
     "usernameAttributes": [
       "email"
     ],
@@ -66,7 +68,7 @@
     "dependsOn": [
       {
         "category": "function",
-        "resourceName": "discountlaunchdarklybc5d3941PreSignup",
+        "resourceName": "discountlaunchdarkly1db6e043PreSignup",
         "triggerProvider": "Cognito",
         "attributes": [
           "Arn",
@@ -75,13 +77,9 @@
       }
     ],
     "permissions": [],
-    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PreSignUp\",\n    \"lambdaFunctionName\": \"discountlaunchdarklybc5d3941PreSignup\"\n  }\n]",
-    "userPoolGroups": true,
-    "adminQueries": false,
-    "hostedUI": false,
+    "authTriggerConnections": "[\n  {\n    \"triggerType\": \"PreSignUp\",\n    \"lambdaFunctionName\": \"discountlaunchdarkly1db6e043PreSignup\"\n  }\n]",
     "parentStack": {
       "Ref": "AWS::StackId"
-    },
-    "authProviders": []
+    }
   }
 }
