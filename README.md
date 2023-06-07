@@ -14,11 +14,16 @@ Uses AWS Amplify behind the scenes.
 8. Disable the Auth AWS_IAM and make it NONE. User validation will happen in Lambda (TODO: see if AWS can block request before spinning lambda)
 9. Find the COGNITO ID, COGNITO CLIENT ID
 10. Update the proxy function values by running `amplify modify function`, then select `proxy` and set all keys.
+11. Update the redirect rules:
+```
+Source address: </^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg|woff|ttf)$)([^.]+$)/>
+Target address: /index.html
+Type: 200
+```
 
 Next Steps:
 
 1. Enable multiple environments in Amplify
-
 1. Create different user groups: read-only, read-write, default
 2. Create one secret for each user type (except default)
 3. Use different keys depending on which user group is used.
