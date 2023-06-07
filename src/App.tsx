@@ -9,9 +9,6 @@ import { withAuthenticator, WithAuthenticatorProps } from '@aws-amplify/ui-react
 import '@aws-amplify/ui-react/styles.css';
 
 import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  RouterProvider,
   BrowserRouter, Route, Routes
 } from "react-router-dom";
 

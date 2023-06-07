@@ -2,7 +2,6 @@ import React, { useState, ReactNode, useEffect, useCallback, useMemo } from 'rea
 import { Center, Spinner } from '@chakra-ui/react';
 import { EnvironmentItem, ListEnvironmentsResponse } from 'hooks/use-list-environments';
 import { LaunchDarklyConfigContext } from './launchdarkly-config.context';
-import { useLaunchDarklyApi } from 'hooks/use-launchdarkly-api';
 import { DEFAULT_PROJECT_KEY } from './constants';
 import { useListProjects } from 'hooks/use-list-projects';
 
@@ -70,7 +69,6 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
     >
       {loading ? (
         <Center minH="300" justifyContent={'center'}>
-          Spinner
           <Spinner />
         </Center>
       ) : (
