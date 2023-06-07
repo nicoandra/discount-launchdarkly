@@ -9,7 +9,7 @@ interface LaunchDarklyApiProviderProps {
 }
 export const LaunchDarklyApiProvider = ({ children }: LaunchDarklyApiProviderProps) => {
   // Consider letting user specify in localStorage/etc
-  const apiKey = process.env.REACT_APP_LAUNCHDARKLY_ACCESS_TOKEN;
+  const apiKey = "something";
 
   const [cognitoUser, setCognitoUser] = useState(false);
 
@@ -22,12 +22,11 @@ export const LaunchDarklyApiProvider = ({ children }: LaunchDarklyApiProviderPro
   }, [cognitoUser]);
 
   const launchDarklyApi = useMemo(() => {
-    return new LaunchDarklyApi({ apiKey: apiKey as string, cognitoUser });
-  }, [apiKey, cognitoUser]);
+    return new LaunchDarklyApi({ cognitoUser });
+  }, [cognitoUser]);
   return (
     <LaunchDarklyApiContext.Provider
       value={{
-        apiKey,
         launchDarklyApi,
         cognitoUser,
       }}

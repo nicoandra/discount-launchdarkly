@@ -12,11 +12,9 @@ export interface LaunchDarklyApiFetchProps {
 }
 
 export class LaunchDarklyApi {
-  apiKey: string;
   cognitoUser: any;
 
-  constructor({ apiKey, cognitoUser }: { apiKey: string; cognitoUser: any }) {
-    this.apiKey = apiKey;
+  constructor({ cognitoUser }: { cognitoUser: any }) {
     this.cognitoUser = cognitoUser;
   }
 
