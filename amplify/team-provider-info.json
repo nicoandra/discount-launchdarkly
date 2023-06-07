@@ -1,81 +1,4 @@
 {
-  "staging": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-amplifyf05bd0bfeab44-staging-200823-authRole",
-      "UnauthRoleArn": "arn:aws:iam::222432380591:role/amplify-amplifyf05bd0bfeab44-staging-200823-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::222432380591:role/amplify-amplifyf05bd0bfeab44-staging-200823-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-amplifyf05bd0bfeab44-staging-200823-deployment",
-      "UnauthRoleName": "amplify-amplifyf05bd0bfeab44-staging-200823-unauthRole",
-      "StackName": "amplify-amplifyf05bd0bfeab44-staging-200823",
-      "StackId": "arn:aws:cloudformation:us-east-1:222432380591:stack/amplify-amplifyf05bd0bfeab44-staging-200823/3abc6c20-0181-11ee-a66c-0ad66163eae7",
-      "AmplifyAppId": "d3nqipgmcpj03z",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-amplifyf05bd0bfeab44-staging-200823-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
-    },
-    "categories": {
-      "function": {
-        "discountlaunchdarklybc5d3941PreSignup": {
-          "DOMAINALLOWLIST": "roofr.com,nmac.com.ar",
-          "deploymentBucketName": "amplify-amplifyf05bd0bfeab44-staging-200823-deployment",
-          "s3Key": "amplify-builds/discountlaunchdarklybc5d3941PreSignup-6f5049487346464e454c-build.zip"
-        },
-        "proxy": {
-          "cognitoClientId": "3358sl7p91utbeoks6kn3ka6mc",
-          "cognitoGroup": "roofr-devs",
-          "cognitoUserPoolId": "us-east-1_OvAIGOpBf",
-          "launchDarklyApiKeySsmPath": "/amplify/d3nqipgmcpj03z/staging/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY",
-          "secretsPathAmplifyAppId": "d3nqipgmcpj03z",
-          "deploymentBucketName": "amplify-amplifyf05bd0bfeab44-staging-200823-deployment",
-          "s3Key": "amplify-builds/proxy-666a7551436f696b4e4c-build.zip"
-        },
-        "discountlaunchdarklybc5d3941": {}
-      },
-      "auth": {
-        "discountlaunchdarklybc5d3941": {},
-        "userPoolGroups": {}
-      }
-    }
-  },
-  "dev": {
-    "awscloudformation": {
-      "AuthRoleName": "amplify-discountlaunchdarkly-dev-123535-authRole",
-      "UnauthRoleArn": "arn:aws:iam::222432380591:role/amplify-discountlaunchdarkly-dev-123535-unauthRole",
-      "AuthRoleArn": "arn:aws:iam::222432380591:role/amplify-discountlaunchdarkly-dev-123535-authRole",
-      "Region": "us-east-1",
-      "DeploymentBucketName": "amplify-discountlaunchdarkly-dev-123535-deployment",
-      "UnauthRoleName": "amplify-discountlaunchdarkly-dev-123535-unauthRole",
-      "StackName": "amplify-discountlaunchdarkly-dev-123535",
-      "StackId": "arn:aws:cloudformation:us-east-1:222432380591:stack/amplify-discountlaunchdarkly-dev-123535/d5549f80-02f5-11ee-b0c7-0e76f40a6c87",
-      "AmplifyAppId": "d3nqipgmcpj03z",
-      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-discountlaunchdarkly-dev-123535-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
-    },
-    "categories": {
-      "auth": {
-        "discountlaunchdarklybc5d3941": {},
-        "userPoolGroups": {}
-      },
-      "function": {
-        "discountlaunchdarklybc5d3941PreSignup": {
-          "DOMAINALLOWLIST": "roofr.com,nmac.com.ar",
-          "deploymentBucketName": "amplify-discountlaunchdarkly-dev-123535-deployment",
-          "s3Key": "amplify-builds/discountlaunchdarklybc5d3941PreSignup-6f5049487346464e454c-build.zip"
-        },
-        "proxy": {
-          "secretsPathAmplifyAppId": "d3nqipgmcpj03z",
-          "deploymentBucketName": "amplify-discountlaunchdarkly-dev-123535-deployment",
-          "s3Key": "amplify-builds/proxy-6c4e776b535a3178396e-build.zip",
-          "launchDarklyApiKeySsmPath": "/amplify/d3nqipgmcpj03z/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY",
-          "cognitoGroup": "developers",
-          "cognitoUserPoolId": "us-east-1_XSCxu1XhI",
-          "cognitoClientId": "425ktoghon2lr950j2jjqfbs8d"
-        },
-        "discountlaunchdarklybc5d3941": {}
-      },
-      "api": {
-        "launchdarklyproxy": {}
-      }
-    }
-  },
   "devnic": {
     "awscloudformation": {
       "AuthRoleName": "amplify-discountlaunchdarkly-devnic-165639-authRole",
@@ -113,9 +36,52 @@
       },
       "api": {
         "launchdarklyproxy": {}
+      }
+    }
+  },
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-discountlaunchdarkly-dev-175906-authRole",
+      "UnauthRoleArn": "arn:aws:iam::222432380591:role/amplify-discountlaunchdarkly-dev-175906-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::222432380591:role/amplify-discountlaunchdarkly-dev-175906-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-discountlaunchdarkly-dev-175906-deployment",
+      "UnauthRoleName": "amplify-discountlaunchdarkly-dev-175906-unauthRole",
+      "StackName": "amplify-discountlaunchdarkly-dev-175906",
+      "StackId": "arn:aws:cloudformation:us-east-1:222432380591:stack/amplify-discountlaunchdarkly-dev-175906/5ce04f60-04b5-11ee-9b58-121878547385",
+      "AmplifyAppId": "d3nqipgmcpj03z",
+      "AuthTriggerTemplateURL": "https://s3.amazonaws.com/amplify-discountlaunchdarkly-dev-175906-deployment/amplify-cfn-templates/auth/auth-trigger-cloudformation-template.json"
+    },
+    "categories": {
+      "auth": {
+        "discountlaunchdarklybc5d3941": {},
+        "userPoolGroups": {}
+      },
+      "function": {
+        "discountlaunchdarklybc5d3941PreSignup": {
+          "DOMAINALLOWLIST": "roofr.com,nmac.com.ar",
+          "deploymentBucketName": "amplify-discountlaunchdarkly-dev-175906-deployment",
+          "s3Key": "amplify-builds/discountlaunchdarklybc5d3941PreSignup-6f5049487346464e454c-build.zip"
+        },
+        "proxy": {
+          "secretsPathAmplifyAppId": "d3nqipgmcpj03z",
+          "deploymentBucketName": "amplify-discountlaunchdarkly-dev-175906-deployment",
+          "s3Key": "amplify-builds/proxy-6c4e776b535a3178396e-build.zip",
+          "launchDarklyApiKeySsmPath": "/amplify/d3nqipgmcpj03z/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY",
+          "cognitoGroup": "developers",
+          "cognitoUserPoolId": "us-east-1_XSCxu1XhI",
+          "cognitoClientId": "425ktoghon2lr950j2jjqfbs8d"
+        },
+        "discountlaunchdarklybc5d3941": {}
+      },
+      "api": {
+        "launchdarklyproxy": {}
       },
       "hosting": {
-        "S3AndCloudFront": {}
+        "amplifyhosting": {
+          "appId": "d3nqipgmcpj03z",
+          "type": "manual"
+        }
       }
     }
   }
