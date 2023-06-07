@@ -10,7 +10,6 @@ interface LaunchDarklyConfigProviderProps {
   children: ReactNode;
 }
 export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProviderProps) => {
-  const { apiKey } = useLaunchDarklyApi();
   const [projectKey, setProjectKey] = useState<string>();
   const [env, setEnv] = useState<EnvironmentItem | null>(null);
 
@@ -71,10 +70,14 @@ export const LaunchDarklyConfigProvider = ({ children }: LaunchDarklyConfigProvi
     >
       {loading ? (
         <Center minH="300" justifyContent={'center'}>
+          Spinner
           <Spinner />
         </Center>
       ) : (
-        children
+        <>
+          In LaunchDarklyConfigProvider
+          {children}
+        </>
       )}
     </LaunchDarklyConfigContext.Provider>
   );
