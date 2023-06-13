@@ -16,6 +16,10 @@
     {
       "cloudFormationParameterName": "launchDarklyApiKeySsmPath",
       "environmentVariableName": "LAUNCH_DARKLY_API_KEY_SSM_PATH"
+    },
+    {
+      "cloudFormationParameterName": "urlUi",
+      "environmentVariableName": "URL_UI"
     }
   ],
   "secretNames": [

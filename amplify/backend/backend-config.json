@@ -169,6 +169,14 @@
         }
       ]
     },
+    "AMPLIFY_function_proxy_urlUi": {
+      "usedBy": [
+        {
+          "category": "function",
+          "resourceName": "proxy"
+        }
+      ]
+    },
     "AMPLIFY_hosting_amplifyhosting_appId": {
       "usedBy": [
         {

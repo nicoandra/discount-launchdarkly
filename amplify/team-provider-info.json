@@ -25,12 +25,13 @@
         },
         "proxy": {
           "deploymentBucketName": "amplify-discountlaunchdarkly-dev-100054-deployment",
-          "s3Key": "amplify-builds/proxy-5847354a684274466237-build.zip",
+          "s3Key": "amplify-builds/proxy-6c424a364e53786d396f-build.zip",
           "secretsPathAmplifyAppId": "d2a48egk8tvffq",
           "cognitoUserPoolId": "us-east-1_BF3SrGOdT",
           "cognitoClientId": "60k6j7rl9kjrb23vlpn08cvl6n",
           "cognitoGroup": "developers",
-          "launchDarklyApiKeySsmPath": "/amplify/d2a48egk8tvffq/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY"
+          "launchDarklyApiKeySsmPath": "/amplify/d2a48egk8tvffq/dev/AMPLIFY_proxy_LAUNCH_DARKLY_API_KEY",
+          "urlUi": "https://dev.d2a48egk8tvffq.amplifyapp.com/"
         }
       },
       "hosting": {

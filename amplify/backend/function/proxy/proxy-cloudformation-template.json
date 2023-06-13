@@ -30,6 +30,9 @@
     },
     "launchDarklyApiKeySsmPath": {
       "Type": "String"
+    },
+    "urlUi": {
+      "Type": "String"
     }
   },
   "Conditions": {
@@ -118,6 +121,9 @@
             },
             "LAUNCH_DARKLY_API_KEY_SSM_PATH": {
               "Ref": "launchDarklyApiKeySsmPath"
+            },
+            "URL_UI": {
+              "Ref": "urlUi"
             }
           }
         },

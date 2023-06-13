@@ -65,9 +65,18 @@ const app = express();
 app.use(awsServerlessExpressMiddleware.eventContext());
 
 app.use(function (req, res, next) {
-  // Enable CORS for all methods
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
+  const origin = req.get('origin')?.toLowerCase() || false;
+  if (false === origin) {
+    next();
+    return ;
+  }
+
+  const whitelist = [process.env.URL_UI || false, 'http://localhost:3000/'];
+
+  const allowed = whitelist.includes(origin) ? origin : process.env.URL_UI;
+
+  res.header('Access-Control-Allow-Origin', allowed);
+  res.header('Access-Control-Allow-Headers', allowed);
   next();
 });
 
